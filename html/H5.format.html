@@ -1,4 +1,4 @@
-<html>
+</em><html>
   <head>
     <title>
       HDF5 File Format Specification Version 3.0
@@ -201,6 +201,7 @@ div {   page-break-inside:avoid;
         <font size="-1">
         <ol type="A">
             <li><a href="#ThisDocument">This Document</a></li>
+            <li><a href="#ChangesForStructChunk">Changes for Structured Chunk</a></li>
             <li><a href="#ChangesForHdf5_1_12">Changes for HDF5 1.12</a></li>
             <li><a href="#ChangesForHdf5_1_10">Changes for HDF5 1.10</a></li>
         </ol>
@@ -351,6 +352,8 @@ div {   page-break-inside:avoid;
 	  <li><a href="#ReferenceEncodeDP">Reference Encoding (Backward Compatibility)</a></li>
 	</ol>
     </font>
+
+    <li><a href="#AppendixE">Appendix E: Layout of Structured Chunk</a></li>
     </ol>
 </td></tr>
 </table>
@@ -481,8 +484,22 @@ div {   page-break-inside:avoid;
     and do not represent any values or padding in the file.
     </p>
 
+<a name="ChangesForStructChunk">
+<h3>I.B. Changes for HDF5 Structured Chunk</h3></a>
+    <p>Links to sections added or updated for structured chunk:
+
+    <ul>
+    <li><a href="#DataLayoutMessageV5">The Data Layout Message: version 5</a> in section IV.A.2.i</li>
+    <li><a href="#FilterMessageV3">The Data Storage - Filter Pipeline Message: version 3</a> in section IV.A.2.l</li>
+    <li><a href="#FixedArrayV1">Fixed Array index: version 1</a> in Appendix C</li>
+    <li><a href="#ExtensibleArrayV1">Extensible Array index: version 1</a> in Appendix C</li>
+    <li><a href="#V1HeaderV2Btrees">Version 2 B-tree index: version 1 header</a> in section III.A.2</li>
+    <li><a href="#AppendixE">Appendix E: Layout of Structured Chunk</a></li>
+    </ul>
+
+
 <a name="ChangesForHdf5_1_12">
-<h3>I.B. Changes for HDF5 1.12</h3></a>
+<h3>I.C. Changes for HDF5 1.12</h3></a>
     <p>The following sections have been 
     changed or added for the 1.12 release:</p>
     <ul>
@@ -496,7 +513,7 @@ div {   page-break-inside:avoid;
 
 
 <a name="ChangesForHdf5_1_10">
-<h3>I.C. Changes for HDF5 1.10</h3></a>
+<h3>I.D. Changes for HDF5 1.10</h3></a>
 
     <p>The following sections have been 
     changed or added for the 1.10 release:</p>
@@ -519,7 +536,7 @@ div {   page-break-inside:avoid;
         </li>
         <li><a href="#LayoutMessage">
         &ldquo;The Data Layout Message&rdquo;</a> section was changed. 
-        The name was changed, and <a href="#DataLayoutV4">version 4</a> 
+        The name was changed, and <a href="#DataLayoutMessageV4">version 4</a> 
         of the data layout message was added for the virtual type.</li>
         <li>The <a href="#FsinfoMessage">
         &ldquo;The File Space Info Message&rdquo;</a> header message
@@ -1919,6 +1936,23 @@ III.A.2. Disk Format: Level 1A2 - Version 2 B-trees</a></h4>
         pointers to further leaf or internal nodes in the tree.  A leaf node
         consists of solely of records.  The format of the records depends on
         the B-tree type (stored in the header).</p>
+    <p>Version 2 B-tree can be used to index dataset chunks for datasets that has
+       more than one dimension of unlimited extent.  In particular,
+       type <a href="#V2BtreesType10">10</a> and type
+       <a href="#V2BtreesType11">11</a> B-tree record layouts are for 
+       indexing dataset chunks.</p>
+    <p>Version 0 is the initial version of the Version 2 B-tree header.  
+       To support structured chunk, a new version (version 1) with two
+       new B-tree types is added to the header.  See information listed below:
+    <ul>
+    <li><p>See <a href="#V1HeaderV2Btrees">version 1 of the version 2 B-tree header.</a></li>
+    <li><p>See <a href="#V2BtreesType12">Type 12 B-tree</a> which is used
+    for indexing structured chunks of datasets with no filters and
+    with more than on dimension of unlimited extent.</li>
+    <li><p>See <a href="#V2BtreesType13">Type 13 B-tree</a> which is used
+    for indexing filtered structured chunks of datasets 
+    with more than on dimension of unlimited extent.</li>
+    </ul>
 
     <div align="center">
       <table class="format">
@@ -3375,11 +3409,10 @@ III.A.2. Disk Format: Level 1A2 - Version 2 B-trees</a></h4>
     <br />
     <br />
     <br />
-    <a name="V2BtType10">
+    <a name="V2BtreesType10">
     <div align="center">
       <table class="format">
         <caption>
-            <a name="V2BtreesType10">
             Layout: Version 2 B-tree, Type 10 Record Layout - 
             Non-filtered Dataset Chunks</a>
         </caption>
@@ -3577,6 +3610,521 @@ III.A.2. Disk Format: Level 1A2 - Version 2 B-trees</a></h4>
       </table>
     </div>
 
+</br>
+</br>
+Version 1 B-tree header for supporting structured chunks:
+</br>
+</br>
+
+    <a name="V1HeaderV2Btrees">
+    <div align="center">
+      <table class="format">
+        <caption>
+            Layout: Version 2 B-tree Header
+        </caption>
+
+        <tr>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+
+        <tr>
+          <td colspan="4">Signature</td>
+        </tr>
+        <tr>
+          <td>Version</td>
+          <td>Type</td>
+          <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted only to align table nicely</em></td>
+	</tr>
+	<tr>
+          <td colspan="4">Node Size</td>
+	</tr>
+	<tr>
+          <td colspan="2">Record Size</td>
+          <td colspan="2">Depth</td>
+	</tr>
+	<tr>
+          <td>Split Percent</td>
+          <td>Merge Percent</td>
+          <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted only to align table nicely</em></td>
+	</tr>
+	<tr>
+          <td colspan="4"><br />Root Node Address<sup>O</sup><br /><br /></td>
+	</tr>
+	<tr>
+          <td colspan="2">Number of Records in Root Node</td>
+          <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted only to align table nicely</em></td>
+	</tr>
+	<tr>
+          <td colspan="4"><br />Total Number of Records in B-tree<sup>L</sup><br /><br /></td>
+	</tr>
+	<tr>
+          <td colspan="4">Checksum</td>
+	</tr>
+      </table>
+
+      <table class="note">
+        <tr>
+            <td width="60%">&nbsp;</td>
+            <td width="40%">
+            (Items marked with an &lsquo;O&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfOffsetsV0">Size 
+            of Offsets</a> field in the superblock.)
+            </td></tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+            (Items marked with an &lsquo;L&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfLengthsV0">Size 
+            of Lengths</a> field in the superblock.)
+            </td></tr>
+      </table>
+
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+        <caption>
+            Fields: Version 2 B-tree Header
+        </caption>
+
+    <tr>
+          <th width="30%">Field Name</th>
+          <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Signature</p></td>
+          <td>
+            <p>The ASCII character string &ldquo;<code>BTHD</code>&rdquo; 
+            is used to indicate the header of a version 2 (v2) B-tree 
+            node.
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Version</p></td>
+          <td>
+            <p>The version number for this B-tree header.  The value
+                for this field is 1 and is introduced to support
+                structured chunk.
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Type</p></td>
+          <td>
+            <p>This field indicates the type of B-tree:
+            <table class="list">
+                <tr>
+                <th width="20%" align="center">Value</th>
+                <th width="80%" align="left">Description</th>
+                </tr>
+                <tr>
+                    <td align="center">0</td>
+                    <td>This B-tree is used for testing only. This 
+                    value should <em>not</em> be used for storing 
+                    records in actual HDF5 files.
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">1</td>
+                    <td>This B-tree is used for indexing indirectly accessed,
+                        non-filtered &lsquo;huge&rsquo; fractal heap objects.
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">2</td>
+                    <td>This B-tree is used for indexing indirectly accessed,
+                        filtered &lsquo;huge&rsquo; fractal heap objects.
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">3</td>
+                    <td>This B-tree is used for indexing directly accessed,
+                        non-filtered &lsquo;huge&rsquo; fractal heap objects.
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">4</td>
+                    <td>This B-tree is used for indexing directly accessed,
+                        filtered &lsquo;huge&rsquo; fractal heap objects.
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">5</td>
+                    <td>This B-tree is used for indexing the &lsquo;name&rsquo; field for
+                        links in indexed groups.
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">6</td>
+                    <td>This B-tree is used for indexing the &lsquo;creation order&rsquo;
+                        field for links in indexed groups.
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">7</td>
+                    <td>This B-tree is used for indexing shared object header
+                        messages.
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">8</td>
+                    <td>This B-tree is used for indexing the &lsquo;name&rsquo; field for
+                        indexed attributes.
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">9</td>
+                    <td>This B-tree is used for indexing the &lsquo;creation order&rsquo;
+                        field for indexed attributes.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center">10</td>
+                    <td>This B-tree is used for indexing chunks of 
+                    datasets with no filters and with more than one 
+                    dimension of unlimited extent.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center">11</td>
+                    <td>This B-tree is used for indexing chunks of 
+                    datasets with filters and more than one dimension 
+                    of unlimited extent. 
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center">12</td>
+                    <td>This B-tree is used for indexing structured chunks of 
+                    datasets with no filters and with more than on dimension 
+                    of unlimited extent.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center">13</td>
+                    <td>This B-tree is used for indexing filtered structured chunks of 
+                    datasets with more than on dimension of unlimited extent.
+                    </td>
+                </tr>
+            </table></p>
+            <p>The format of records for type 12 and type 13 is described below.</p>
+            <p>The remaining types are described previously with version 0 header.</p>
+          </td>
+        </tr>
+
+        <tr valign="top">
+          <td><p>Node Size</p></td>
+          <td>
+            <p>This is the size in bytes of all B-tree nodes.
+            </p>
+          </td>
+        </tr>
+
+        <tr valign="top">
+          <td><p>Record Size</p></td>
+          <td>
+            <p>This field is the size in bytes of the B-tree record.
+            </p>
+          </td>
+        </tr>
+
+        <tr valign="top">
+          <td><p>Depth</p></td>
+          <td>
+            <p>This is the depth of the B-tree.
+            </p>
+          </td>
+        </tr>
+
+        <tr valign="top">
+          <td><p>Split Percent</p></td>
+          <td>
+            <p>The percent full that a node needs to increase above before it
+                is split.
+            </p>
+          </td>
+        </tr>
+
+        <tr valign="top">
+          <td><p>Merge Percent</p></td>
+          <td>
+            <p>The percent full that a node needs to be decrease below before it
+                is split.
+            </p>
+          </td>
+        </tr>
+
+        <tr valign="top">
+          <td><p>Root Node Address</p></td>
+          <td>
+            <p>This is the address of the root B-tree node.  A B-tree with
+                no records will have the <a href="#UndefinedAddress">undefined
+                address</a> in this field.
+            </p>
+          </td>
+        </tr>
+
+        <tr valign="top">
+          <td><p>Number of Records in Root Node</p></td>
+          <td>
+            <p>This is the number of records in the root node.
+            </p>
+          </td>
+        </tr>
+
+        <tr valign="top">
+          <td><p>Total Number of Records in B-tree</p></td>
+          <td>
+            <p>This is the total number of records in the entire B-tree.
+            </p>
+          </td>
+        </tr>
+
+        <tr valign="top">
+          <td><p>Checksum</p></td>
+          <td>
+            <p>This is the checksum for the B-tree header.
+            </p>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <a name="V2BtreesType12">
+    <div align="center">
+      <table class="format">
+        <caption>
+            Layout: Version 2 B-tree, Type 12 Record Layout - 
+            Unfiltered Structured Dataset Chunks</a>
+        </caption>
+
+        <tr>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Address<sup>O</sup><br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Chunk Size 
+          <em>(variable size; at most 8 bytes)</em><br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Dimension 0 Scaled Offset 
+          <em>(8 bytes)</em><br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Dimension 1 Scaled Offset 
+          <em>(8 bytes)</em><br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />...<br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Dimension #n Scaled Offset 
+          <em>(8 bytes)</em><br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Structured Chunk Metadata <em>(variable size, but fixed within any one B-tree)</em><br /><br /></td>
+	</tr>
+
+      </table>
+
+      <table class="note">
+        <tr>
+            <td width="60%">&nbsp;</td>
+            <td width="40%">
+            (Items marked with an &lsquo;O&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfOffsetsV0">Size 
+            of Offsets</a> field in the superblock.)
+            </td></tr>
+      </table>
+
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+        <caption>
+            Fields: Version 2 B-tree, Type 12 Record Layout - 
+            Unfiltered Structured Dataset Chunks</a>
+        </caption>
+	<tr>
+          <th width="30%">Field Name</th>
+          <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Address</p></td>
+          <td>
+            <p>This field is the address of the dataset chunk in the file.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Chunk Size</p></td>
+          <td>
+            <p>This field is the size of the dataset chunk in bytes.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Dimension #n Scaled Offset</p></td>
+          <td>
+            <p>This field is the scaled offset of the chunk within the 
+            dataset. <em>n</em> is the number of dimensions for the 
+            dataset. The first scaled offset stored in the list is for 
+            the slowest changing dimension, and the last scaled offset 
+            stored is for the fastest changing dimension. Scaled offset 
+            is calculated by dividing the chunk dimension sizes into 
+            the chunk offsets.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Structured Chunk Metadata</p></td>
+          <td><p>See <a href="#StructChunkMeta"><i>Structured Chunk Metadata</i></a></p></td>
+        </tr>
+
+      </table>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <a name="V2BtreesType13">
+    <div align="center">
+      <table class="format">
+        <caption>
+            Layout: Version 2 B-tree, Type 13 Record Layout - Filtered 
+            Structured Dataset Chunks </a>
+        </caption>
+
+        <tr>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Address<sup>O</sup><br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Chunk Size 
+          <em>(variable size; at most 8 bytes)</em><br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Dimension 0 Scaled Offset 
+          <em>(8 bytes)</em><br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Dimension 1 Scaled Offset 
+          <em>(8 bytes)</em><br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />...<br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Dimension #n Scaled Offset 
+          <em>(8 bytes)</em><br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Filtered Structured Chunk Metadata <em>(variable size, but fixed within any one B-tree)</em><br /><br /></td>
+	</tr>
+
+      </table>
+
+      <table class="note">
+        <tr>
+            <td width="60%">&nbsp;</td>
+            <td width="40%">
+            (Items marked with an &lsquo;O&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfOffsetsV0">Size 
+            of Offsets</a> field in the superblock.)
+            </td></tr>
+        </table>
+        
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+        <caption>
+            Fields: Version 2 B-tree, Type 13 Record Layout - Filtered 
+            Structured Dataset Chunks </a>
+        </caption>
+
+	    <tr>
+          <th width="30%">Field Name</th>
+          <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Address</p></td>
+          <td>
+            <p>This field is the address of the dataset chunk in the file.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Chunk Size</p></td>
+          <td>
+            <p>This field is the size of the dataset chunk in bytes.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Dimension #n Scaled Offset</p></td>
+          <td>
+            <p>This field is the scaled offset of the chunk within 
+            the dataset. <em>n</em> is the number of dimensions for 
+            the dataset. The first scaled offset stored in the list 
+            is for the slowest changing dimension, and the last scaled 
+            offset stored is for the fastest changing dimension.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Filtered Structured Chunk Metadata</p></td>
+          <td><p>See <a href="#FilterStructChunkMeta"><i>Filtered Structured Chunk Metadata</i></a></p></td>
+        </tr>
+
+      </table>
+    </div>
+</br>
+</br>
+</br>
+</br>
+
 <h3><a name="SymbolTable">
 III.B. Disk Format: Level 1B - Group Symbol Table Nodes</a></h3>
 
@@ -3691,6 +4239,119 @@ III.B. Disk Format: Level 1B - Group Symbol Table Nodes</a></h3>
       </table>
     </div>
 
+    <br />
+    <br />
+    <br />
+    <div align="center">
+      <table class="format">
+        <caption>
+            <a name="V2BtreesType11">
+            Layout: Version 2 B-tree, Type 11 Record Layout - Filtered 
+            Dataset Chunks </a>
+        </caption>
+
+        <tr>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Address<sup>O</sup><br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Chunk Size 
+          <em>(variable size; at most 8 bytes)</em><br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4">Filter Mask</td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Dimension 0 Scaled Offset 
+          <em>(8 bytes)</em><br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Dimension 1 Scaled Offset 
+          <em>(8 bytes)</em><br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />...<br /><br /></td>
+	</tr>
+
+	<tr>
+          <td colspan="4"><br />Dimension #n Scaled Offset 
+          <em>(8 bytes)</em><br /><br /></td>
+	</tr>
+
+      </table>
+
+      <table class="note">
+        <tr>
+            <td width="60%">&nbsp;</td>
+            <td width="40%">
+            (Items marked with an &lsquo;O&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfOffsetsV0">Size 
+            of Offsets</a> field in the superblock.)
+            </td></tr>
+        </table>
+        
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+        <caption>
+            Fields: Version 2 B-tree, Type 11 Record Layout - Filtered 
+            Dataset Chunks </a>
+        </caption>
+	<tr>
+          <th width="30%">Field Name</th>
+          <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Address</p></td>
+          <td>
+            <p>This field is the address of the dataset chunk in the file.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Chunk Size</p></td>
+          <td>
+            <p>This field is the size of the dataset chunk in bytes.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Filter Mask</p></td>
+          <td>
+            <p>This field is the filter mask which indicates the filter
+		to skip for the dataset chunk.  Each filter has an index
+		number in the pipeline and if that filter is skipped,
+		the bit corresponding to its index is set.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Dimension #n Scaled Offset</p></td>
+          <td>
+            <p>This field is the scaled offset of the chunk within 
+            the dataset. <em>n</em> is the number of dimensions for 
+            the dataset. The first scaled offset stored in the list 
+            is for the slowest changing dimension, and the last scaled 
+            offset stored is for the fastest changing dimension.</p>
+          </td>
+        </tr>
+
+      </table>
+    </div>
 <h3><a name="SymbolTableEntry">
 III.C. Disk Format: Level 1C - Symbol Table Entry </a></h3>
 
@@ -12555,7 +13216,7 @@ External Data Files Message</a></h4>
     <tr><td><b>Description:</b></td>
       <td>The Data Layout message 
       describes how the elements of a multi-dimensional array are stored 
-      in the HDF5 file. Four types of data layout are supported:
+      in the HDF5 file. Five types of data layout are supported:
       <ol>
         <li>Contiguous: The array is stored in one contiguous area of 
         the file. This layout requires that the size of the array be 
@@ -12580,12 +13241,19 @@ External Data Files Message</a></h4>
         (VDS) mapping information. The mapping associates the VDS to 
         the source dataset elements that are stored across a collection 
         of HDF5 files.</li>
+        <li>Structured Chunk: This is only supported for
+        <a href="#DataLayoutMessageV5">version 5 of the Data Layout message.</i></a>
+        For the layout of structured chunk, 
+        see <a href="#AppendixE">&ldquo;Appendix E: Layout of Structured Chunk&rdquo;</a></li>
+
+
+
       </ol></td></tr>
     <tr><td colspan="2"><b>Format of Data:</b> See the tables 
       below.</td></tr>
     </table></center>
     <!-- end msgdesc table -->
-    
+   </br> 
     <div align="center">
       <table class="format">
     <caption>
@@ -13134,7 +13802,7 @@ External Data Files Message</a></h4>
 
     <br />
 
-    <p><a name="DataLayoutV4">
+    <p><a name="DataLayoutMessageV4">
     Version 4</a> of this message is similar to version 3 but has 
     additional information for the virtual layout class as well as 
     indexing information for the chunked layout class.</p>
@@ -13869,6 +14537,666 @@ External Data Files Message</a></h4>
       </table>
     </div>
 
+    <br />
+    <br />
+    <br />
+    <br />
+    <p><a name="DataLayoutMessageV5"></a> 
+    Version 5 of the Data Layout message for the structured chunk layout class.
+    <br />
+    <br />
+
+    <div align="center">
+      <table class="format">
+    <caption>
+        Layout: Data Layout Message (Version 5)
+    </caption>
+
+	<tr>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	</tr>
+
+	<tr>
+	  <td>Version</td>
+	  <td>Layout Class</td>
+          <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted 
+          only to align table nicely</em></td>
+	</tr>
+
+	<tr>
+	  <td colspan="4"><br />Properties <em>(variable size)</em><br /><br /></td>
+	</tr>
+      </table>
+    </div>
+
+    <br />
+    <br />
+    <div align="center">
+      <table class="desc">
+    <caption>
+        Fields: Data Layout Message (Version 5)
+    </caption>
+	<tr>
+	  <th width="30%">Field Name</th>
+	  <th>Description</th>
+	</tr>
+
+	<tr>
+	  <td><p>Version</p></td>
+	  <td>
+	    <p>The value for this field is 5. It is introduced
+        to support the structured chunk layout.
+	    </p>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td><p>Layout Class</p></td>
+	  <td><p>The layout class specifies the type of storage for the data
+            and how the other fields of the layout message are to be
+            interpreted.
+	      <table class="list">
+            <tr>
+                <th width="20%" align="center">Value</th>
+                <th width="80%" align="left">Description</th>
+            </tr>
+
+            <tr>
+                <td align="center"><code>0</code></td>
+                <td>Compact Storage
+                  </td>
+            </tr>
+
+            <tr>
+                <td align="center"><code>1</code></td>
+                <td>Contiguous Storage
+                  </td>
+            </tr>
+
+            <tr>
+                <td align="center"><code>2</code></td>
+                <td>Chunked Storage
+                  </td>
+            </tr>
+
+            <tr>
+                <td align="center"><code>3</code></td>
+                <td>Virtual Storage
+                  </td>
+            </tr>
+
+            <tr>
+                <td align="center"><code>4</code></td>
+                <td>Structured Chunk Storage
+                  </td>
+            </tr>
+
+          </table>
+          </p>
+          </td>
+	</tr>
+
+	<tr>
+	  <td><p>Properties</p></td>
+	  <td><p>This variable-sized field encodes information specific to a 
+            layout class as follows:
+	      <table class="list">
+            <tr>
+                <th align="left" width="30%">Layout Class</th>
+                <th align="left" width="70%">Description</th>
+            </tr>
+
+            <tr>
+                <td align="left">Compact Storage</td>
+                <td>See <a href="#CompactStorage">Compact Storage 
+                Property Description</i></a> for the version 3 
+                Data Layout message.
+                </td>
+            </tr>
+
+            <tr>
+                <td align="left">Contiguous Storage</td>
+                <td>See <a href="#ContiguousStorage">Contiguous Storage 
+                Property Description</i></a> for the version 3 
+                Data Layout message.
+                  </td>
+            </tr>
+
+            <tr>
+                <td align="left">Chunked Storage</td>
+                <td>See <a href="#ChunkedStorage">Chunked Storage 
+                Property Description</i></a> for the version 4
+                Data Layout message.
+                  </td>
+            </tr>
+
+            <tr>
+                <td align="left">Virtual Storage</td>
+                    <td>See <a href="#VirtualStorage">Virtual Storage 
+                    Property Description</i></a> for the version 4 
+                    Data Layout message.
+                      </td>
+                </tr>
+
+                <tr>
+                    <td align="left">Structured Chunk Storage</td>
+                    <td>See <a href="#StructChunkStorage">Structured Chunk Storage 
+                    Property Description</i></a> below.
+                      </td>
+                </tr>
+
+              </table>
+
+            </p></td>
+        </tr>
+          </table>
+        </div>
+
+        <br />
+        <br />
+        <a name="StructChunkStorage"></a>
+        <p>Class-specific information for structured chunk storage (layout 
+        class 4):</p>
+
+        <div align="center">
+          <table class="format">
+        <caption>
+            Layout: Structured Chunk Storage Property Description
+        </caption>
+
+        <tr>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+        </tr>
+
+        <tr>
+          <td>Version</td>
+          <td colspan="2">Structured Chunk Type</td>
+          <td colspan="1" bgcolor="#DDDDDD"><em>This space inserted to align table nicely</em></td>
+        </tr>
+
+        <tr>
+          <td>Flags</td>
+          <td>Dimensionality</td>
+          <td>Dimension Size Encoded Length</td>
+              <td colspan="1" bgcolor="#DDDDDD"><em>This space inserted to align table nicely</em></td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Dimension 0 Size <em>(variable size)</em></td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Dimension 1 Size <em>(variable size)</em></td>
+        </tr>
+        
+        <tr>
+          <td colspan="4">...</td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Dimension #n Size <em>(variable size)</em></td>
+        </tr>
+
+        <tr>
+          <td>Chunk Indexing Type</td>
+              <td colspan="3" bgcolor="#DDDDDD"><em>This space inserted only to align table nicely</em></td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Indexing Type Information <em>(variable size)</em></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Address<sup>O</sup><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Structured Chunk Composition <em>(variable size)</em><br /></br /></td>
+        </tr>
+
+          </table>
+
+        </div>
+
+        <br />
+        <div align="center">
+          <table class="desc">
+        <caption>
+            Fields: Structured Chunk Storage Property Description
+        </caption>
+        <tr>
+              <th width="30%">Field Name</th>
+              <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Version</p></td>
+          <td><p>This is the version number for the Structured Chunk Storage property.
+                 The value for this field is 0 and is introduced to support structured chunk.</p></td>
+        </tr>
+
+        <tr>
+          <td><p>Structured Chunk Type</p></td>
+          <td>
+                <p>Type of structured Chunk:
+                    <table class="list">
+                        <tr>
+                          <th width="20%" align="center">Bits</th>
+                          <th width="80%" align="left">Description</th>
+                        </tr>
+
+                        <tr>
+                          <td align="center"><code>0</code></td>
+                          <td>Sparse chunk storage type
+                          </td>
+                        </tr>
+                        <tr>
+                          <td align="center"><code>1</code></td>
+                          <td>Variable-length chunk storage type
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td align="center"><code>2-15</code></td>
+                          <td>Reserved (zero).
+                          </td>
+                        </tr>
+                    </table></p>
+                
+              </td>
+        </tr>
+
+        <tr>
+          <td><p>Flags</p></td>
+          <td><p>This is the chunked layout feature flag:</p>
+
+              <table class="list">
+            <tr>
+              <th width="55%" align="left">Value</th>
+              <th width="45%" align="left">Description</th>
+            </tr>
+
+            <tr>
+              <td align="left"><code>DONT_FILTER_PARTIAL_BOUND_CHUNKS (bit 0)</code></td>
+              <td>Do not apply filter to a partial edge chunk.
+
+                      </td>
+            </tr>
+
+            <tr>
+              <td align="left"><code>SINGLE_INDEX_WITH_FILTER (bit 1)</code></td>
+              <td>A filtered chunk for <i>Single Chunk</i> indexing.
+                      </td>
+            </tr>
+
+              </table>
+
+            </td>
+
+        </tr>
+
+        <tr>
+          <td><p>Dimensionality</p></td>
+          <td><p>A chunk has fixed dimension.  This field specifies 
+            the number of <em>Dimension Size</em> fields later in the message.</p></td>
+        </tr>
+
+        <tr>
+          <td><p>Dimension Size Encoded Length</p></td>
+          <td>
+            <p>This is the size in bytes used to encode <em>Dimension Size</em>.
+                </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Dimension #n Size</p></td>
+          <td><p>These values define the dimension size of a single chunk, in
+                units of array elements (not bytes).  The first dimension stored in
+                the list of dimensions is the slowest changing dimension and the
+                last dimension stored is the fastest changing dimension.
+                </p>
+              </td>
+        </tr>
+
+        <tr>
+          <td><p>Chunk Indexing Type</p></td>
+          <td><p>There are five indexing types used to look up addresses 
+          of the chunks. For more information on each type, see 
+          <a href="#AppendixC">&ldquo;Appendix C: Types of Indexes for 
+          Dataset Chunks.&rdquo;</a>
+              <table class="list">
+            <tr>
+              <th width="20%" align="center">Value</th>
+              <th width="80%" align="left">Description</th>
+            </tr>
+
+            <tr>
+              <td align="center"><code>1</code></td>
+              <td><a href="#SingleChunk"><i>Single Chunk</i></a> indexing type.  
+                      </td>
+            </tr>
+
+            <tr>
+              <td align="center"><code>2</code></td>
+              <td><a href="#Implicit"><i>Implicit</i></a> indexing type.
+                      </td>
+            </tr>
+
+            <tr>
+              <td align="center"><code>3</code></td>
+              <td><a href="#FixedArray"><i>Fixed Array</i></a> indexing type.
+                      </td>
+            </tr>
+
+            <tr>
+              <td align="center"><code>4</code></td>
+              <td><a href="#ExtensibleArray"><i>Extensible Array</i></a> indexing type.
+                      </td>
+            </tr>
+
+            <tr>
+              <td align="center"><code>5</code></td>
+              <td><a href="#V2Btrees"><i>Version 2 B-tree</i></a> indexing type.
+                      </td>
+            </tr>
+
+              </table>
+                </p>
+              </td>
+        </tr>
+
+        <tr>
+          <td><p>Indexing Type Information</p></td>
+          <td><p>This variable-sized field encodes information specific to 
+          an indexing type for the structured chunk. More information on what is encoded with 
+          each type can be found below.
+            <ul>
+            <li>See <a href="#StructChunkIndexSingle"><i>Single Chunk</i></a> below.</li>
+            <li><i>Implicit</i> indexing type is not supported for structured chunk due to its variable-size nature.
+            <li>See <a href="#IndexInfoFixed"><i>Fixed Array</i></a> in version 4 of this message.</li>
+            <li>See <a href="#IndexInfoExtensible"><i>Extensible Array</i></a> in version 4 of this message.</li>
+            <li>See <a href="#IndexInfoV2Btrees"><i>Version 2 B-tree</i></a> in version 4 of this message.</li>
+            </ul>
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Address</p></td>
+          <td><p>This is the address specific to an indexing type.
+             The address may be undefined if the chunk or index storage is not allocated yet.
+              <table class="list">
+            <tr>
+              <th width="40%" align="left">Value</th>
+              <th width="60%" align="left">Description</th>
+            </tr>
+
+            <tr>
+              <td align="left"><i>Single Chunk index</i></td>
+              <td align="left">Address of the single chunk.</td>
+                      </td>
+            </tr>
+
+            <tr>
+              <td align="left"><i>Implicit index</i></td>
+              <td align="left">Address of the array of dataset chunks.</td>
+                      </td>
+            </tr>
+
+            <tr>
+              <td align="left"><i>Fixed Array index</i></td> <td align="left">Address of the index.</td>
+            </tr>
+
+            <tr>
+              <td align="left"><i>Extensible Array index</i></td>
+              <td align="left">Address of the index.</td>
+                      </td>
+            </tr>
+
+            <tr>
+              <td align="left"><i>Version 2 B-tree index</i></td>
+              <td align="left">Address of the index.</td>
+                      </td>
+            </tr>
+
+              </table>
+
+                </p>
+              </td>
+        </tr>
+
+
+        <tr>
+          <td><p>Structured Chunk Composition</p></td>
+          <td><p>See <a href="#StructChunkComposition"><i>Structured Chunk Composition Description</i></a> below.</p></td>
+        </tr>
+
+          </table>
+        </div>
+
+        <br />
+        <br />
+        <br />
+
+        <a name="StructChunkIndexSingle">
+        Structured Chunk Indexing Type Information for <i>Single Chunk</i>:
+        <br />
+        <br />
+        
+        <div align="center">
+          <table class="format">
+        <caption>
+            Layout: Structured Chunk Indexing Type Information for Single Chunk
+        </caption>
+
+        <tr>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Chunk Size <em>(variable size; at most 8 bytes)</em><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Structured Chunk Metadata <em>(variable size)</em></td>
+        </tr>
+
+          </table>
+
+        </div>
+
+        <br />
+        <br />
+        <div align="center">
+          <table class="desc">
+        <caption>
+            Fields: Structured Chunk Indexing Type Information for Single Chunk 
+        </caption>
+        <tr>
+              <th width="30%">Field Name</th>
+              <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Chunk Size</p></td>
+          <td><p>This field is the chunk size.</p></td>
+        </tr>
+
+        <tr>
+          <td><p>Structured Chunk Metadata</p></td>
+          <td><p>See <a href="#StructChunkMeta"><i>Structured Chunk Metadata</i></a></p></td>
+        </tr>
+          </table>
+        </div>
+        </p>
+
+        <br />
+        <br />
+        <div align="center">
+          <table class="format">
+        <caption>
+            Layout: Filtered Structured Chunk Indexing Type Information for Single Chunk
+        </caption>
+
+        <tr>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Chunk Size <em>(variable size; at most 8 bytes)</em><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Filtered Structured Chunk Metadata <em>(variable size)</em></td>
+        </tr>
+
+          </table>
+
+        </div>
+
+        <br />
+        <br />
+        <div align="center">
+          <table class="desc">
+        <caption>
+            Fields: Filtered Structured Chunk Indexing Type Information for Single Chunk
+        </caption>
+        <tr>
+              <th width="30%">Field Name</th>
+              <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Chunk Size</p></td>
+          <td><p>This field is the chunk size.</p></td>
+        </tr>
+
+        <tr>
+          <td><p>Filtered Structured Chunk Metadata</p></td>
+          <td><p>See <a href="#FilterStructChunkMeta"><i>Filtered Structured Chunk Metadata</i></a></p></td>
+        </tr>
+          </table>
+        </div>
+        </p>
+
+    <br />
+    <br />
+    <br />
+    <a name="StructChunkComposition"></a>
+    <p>Layout for the <em>Structured Chunk Composition Description</em>:</p>
+    <br />
+
+        <div align="center">
+          <table class="format">
+        <caption>
+            Layout: Structured Chunk Composition Description
+        </caption>
+
+        <tr>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4">Offset Size</td>
+        </tr>
+        <tr>
+          <td>Number of Sections</td>
+          <td>Number of Sections containing metadata</td>
+          <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted to align table nicely</em></td>
+        </tr>
+
+        <tr>
+          <td>Number of First Section with metadata</td>
+          <td>...</td>
+          <td>...</td>
+          <td>Number of Last Section with metadata</td>
+        </tr>
+
+          </table>
+
+        </div>
+
+        <br />
+        <br />
+        <div align="center">
+          <table class="desc">
+        <caption>
+            Fields: Structured Chunk Composition Description
+        </caption>
+        <tr>
+              <th width="30%">Field Name</th>
+              <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Offset size</p></td>
+          <td><p>Number of bytes used to store offsets in the structured chunk;
+                 currently it is 4 bytes due to API limitation;
+                 HDF5 file format allows chunk size bigger thatn 4GB</td>
+        </tr>
+
+        <tr>
+          <td><p>Number of sections</p></td>
+          <td>
+            <p>Number of sections in each structured chunk in the dataset.
+               <p>At present, this number is implied by the structured chunk type above.
+               However, this needs not always be the case.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Number of sections containing metadata</p></td>
+          <td>
+            <p>Number of sections which may contain metadata, and which therefore
+               requires a checksum if non-empty.</p>
+            <p>At present, this number and the list of sections with metadata below is 
+               implied by the <em>Structured Chunk Type</em> above.  
+               However, this needs not always be the case.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Number of first section with metadata</p></td>
+          <td>
+            <p>Number of the first section that may contain metadata.
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Number of last section with metadata</p></td>
+          <td>
+            <p>Number of the last section that may contain metadata.
+               The total number of sections from <em>first</em> through
+               <em>last</em> section will be 
+               equal to the <em>"Number of Sections containing metadata"</em> above.
+            </p>
+          </td>
+        </tr>
+
+          </table>
+        </div>
+
+        <br />
+        <br />
+        <br />
+
 <h4><a name="BogusMessage">IV.A.2.j. The Bogus Message</a></h4>
 
     <!-- start msgdesc table -->
@@ -14089,12 +15417,15 @@ Pipeline Message</a></h4>
       filters to apply to raw data. For groups, it specifies the 
       filters to apply to the group&rsquo;s fractal heap. Currently, 
       only datasets using chunked data storage use the filter 
-      pipeline on their raw data.</p></td></tr>
+      pipeline on their raw data.</p>
+      To support structured chunk, a new version (verion 3) is added.
+      See <a href="#FilterMessageV3">version 3 of the Filter Pipeline message.</a> 
+      </td></tr>
     <tr><td colspan="2"><b>Format of Data:</b> See the tables 
       below.</td></tr>
     </table></center>
     <!-- end msgdesc table -->
-    
+   </br> 
     <div align="center">
       <table class="format">
     <caption>
@@ -14425,6 +15756,7 @@ Pipeline Message</a></h4>
     <br />
     <br />
     <br />
+    <a name="V2FilterDescr"></a>
     <div align="center">
       <table class="format">
     <caption>
@@ -14628,7 +15960,135 @@ Pipeline Message</a></h4>
 	</tr>
       </table>
     </div>
-    
+
+    <br />
+    <br />
+    <a name="FilterMessageV3">
+    Version 3 of the Filter Pipeline Message:
+    <br />
+    <br />
+    <div align="center">
+      <table class="format">
+    <caption>
+        Layout: Filter Pipeline Message - Version 3
+    </caption>
+
+	<tr>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	</tr>  
+
+	<tr>
+	  <td>Version</td>
+	  <td>Number of Filtered Sections</td>
+      <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted only to align table nicely</em></td>
+	</tr>
+
+	<tr>
+	  <td>Number of First Filtered Section</td>
+	  <td>Number of Filters for First Filtered Section</td>
+	  <td colspan="2"><br />Size of the first Filter Description List<br /><br /></td>
+	</tr>
+
+	<tr>
+	  <td colspan="4"><br />Filter Description List (<em>variable size</em>)<br /><br /></td>
+	</tr>
+	<tr>
+	  <td colspan="4"><br />...<br /><br /></td>
+	</tr>
+	<tr>
+	  <td>Number of Last Filtered Section</td>
+	  <td>Number of Filters for Last Filtered Section</td>
+	  <td colspan="2"><br />Size of the Last Filter Description List<br /><br /></td>
+	</tr>
+
+	<tr>
+	  <td colspan="4"><br />Filter Description List <em>(variable size</em>)<br /><br /></td>
+	</tr>
+
+      </table>
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+    <caption>
+        Fields: Filter Pipeline Message - Version 3
+    </caption>
+	<tr>
+          <th width="30%">Field Name</th>
+          <th>Description</th>
+	</tr>
+
+	<tr>
+	  <td><p>Version</p></td>
+	  <td><p>The version number for this message. The value for this field
+             is 3 and is introduced ot support structured chunk.</p></td>
+	</tr>
+
+	<tr>
+	  <td><p>Number of Filtered Sections</p></td>
+	  <td><p>Total number N of the filtered sections in
+	    the structured chunk.</p></td>
+	</tr>
+
+	<tr>
+	  <td><p>Number of First Filtered Section</p></td>
+	  <td><p>Number of the first filtered section.</p></td>
+	</tr>
+
+	<tr>
+	  <td><p>Number of Filters for First Filtered Section</p></td>
+	  <td><p>The total number of filters specified for the first section
+             that is filtered.  The maximum possible number of filters
+             in a message is 32.</p></td>
+	</tr>
+
+	<tr>
+	  <td><p>Size of the First Filter Description List</p></td>
+	  <td><p>Size of the First Filter Description List in bytes.</p></td>
+	</tr>
+
+	<tr>
+	  <td><p>Filter Description List</p></td>
+	  <td><p>A description of each filter as it appears in the
+             <a href="#V2FilterDescr">filter description list</i></a> 
+             of the version 2 Filter Pipeline message.
+	</tr>
+
+	<tr>
+	  <td><p>Number of Last Filtered Section.</p></td>
+	  <td><p>Number of the last filtered section.</p></td>
+	</tr>
+
+	<tr>
+	  <td><p>Number of Filters for Last Filtered Section</p></td>
+	  <td><p>The total number of filters specified for the last section
+             that is filtered.  The maximum possible number of filters
+             in a message is 32.</p></td>
+	</tr>
+
+	<tr>
+	  <td><p>Size of the Last Filter Description List</p></td>
+	  <td><p>Size of the Filter Description List in bytes
+             for the last section that is filtered.</p></td>
+	</tr>
+
+	<tr>
+	  <td><p>Filter Description List</p></td>
+	  <td><p>A description of each filter as it appears in the
+             <a href="#V2FilterDescr">filter description list</i></a> 
+             of the version 2 Filter Pipeline message.
+	</tr>
+
+      </table>
+    </div>
+
+<br/>
+<br/>
+<br/>
 <h4><a name="AttributeMessage">IV.A.2.m. The Attribute Message</a></h4>
 
     <!-- start msgdesc table -->
@@ -17138,6 +18598,10 @@ dataset&rsquo;s dimension specification and the way it is extended.
     
     <p>An entry describes either a filtered or non-filtered dataset 
     chunk.  The formats for both element types are described below.
+
+    <p>To support structured chunk, a new version (version 1) is added
+    to the fixed array index structures as well as new client IDs and
+    element types.  See <a href="#FixedArrayV1">Fixed Array version 1</a>.
     </p>
     <br />
     <div align="center">
@@ -17687,6 +19151,634 @@ dataset&rsquo;s dimension specification and the way it is extended.
       </table>
     </div>
 
+    <br />
+    <br />
+    <br />
+Version 1 of the Fixed Array index:
+    <br />
+    <a name="FixedArrayV1"></a>
+    <br />
+    <br />
+    <div align="center">
+      <table class="format">
+        <caption>
+            Layout: Fixed Array Header
+        </caption>
+
+        <tr>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4">Signature</td>
+        </tr>
+          
+        <tr>
+          <td>Version</td>
+          <td>Client ID</td>
+          <td>Entry Size</td>
+          <td>Page Bits</td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Max Num 
+          Entries<sup>L</sup><br /><br /></td>
+        </tr>
+          
+        <tr>
+          <td colspan="4"><br />Data Block 
+          Address<sup>O</sup><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Checksum</td>
+        </tr>
+
+      </table>
+
+      <table class="note">
+        <tr>
+            <td width="60%">&nbsp;</td>
+            <td width="40%">
+            (Items marked with an &lsquo;L&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfLengthsV0">Size 
+            of Lengths</a> field in the superblock.)
+            </td></tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+            (Items marked with an &lsquo;O&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfOffsetsV0">Size 
+            of Offsets</a> field in the superblock.)
+            </td></tr>
+      </table>
+
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+        <caption>
+            Fields: Fixed Array Header
+        </caption>
+	<tr>
+          <th width="40%">Field Name</th>
+          <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Signature</p></td>
+          <td>
+            <p>The ASCII character string &ldquo;<code>FAHD</code>&rdquo; 
+            is used to indicate the beginning of a Fixed Array header. 
+            This gives file consistency checking utilities a better 
+            chance of reconstructing a damaged file.
+            </p>
+          </td>
+        </tr>
+          
+        <tr>
+          <td><p>Version</p></td>
+          <td>
+            <p>The value for this field is 1
+               and is introduced to support structured chunk.</p>
+          </td>
+        </tr>
+
+	<tr>
+          <td><p>Client ID</p></td>
+          <td>
+            <p>The ID for identifying the client of the
+                Fixed Array:
+
+                <table class="list">
+                    <tr>
+                      <th width="20%" align="center">ID</th>
+                      <th width="80%" align="left">Description</th>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>0</code></td>
+                      <td>Non-filtered dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>1</code></td>
+                      <td>Filtered dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>2</code></td>
+                      <td>Structured dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>3</code></td>
+                      <td>Filtered structured dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>4+</code></td>
+                      <td>Reserved
+                      </td>
+                    </tr>
+                </table>
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Entry Size</p></td>
+	  <td>
+	    <p>The size in bytes of an entry in the Fixed Array.
+            </p>
+	  </td>
+        </tr>
+
+	<tr>
+	  <td><p>Page Bits</p></td>
+	  <td>
+            <p>The number of bits needed to store the maximum 
+            number of entries in a 
+            <a href="#FADataBlockPage">data block page.</a></p>
+          </td>
+	</tr>
+	
+	<tr>
+	  <td><p>Max Num Entries</p></td>
+	  <td>
+	    <p>The maximum number of entries in the Fixed 
+        Array.</p>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td><p>Data Block Address</p></td>
+	  <td>
+	    <p>The address of the data block in the Fixed Array.
+	    </p>
+	  </td>
+
+        <tr>
+          <td><p>Checksum</p></td>
+          <td>
+            <p>The checksum for the header.</p>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <div align="center">
+      <table class="format">
+        <caption>
+            Layout: Fixed Array Data Block
+        </caption>
+
+        <tr>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4">Signature</td>
+        </tr>
+          
+        <tr>
+          <td>Version</td>
+          <td>Client ID</td>
+          <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted 
+          only to align table nicely</em></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Header Address<sup>O</sup><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Page Bitmap <em>(variable size and 
+          optional)</em><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Elements <em>(variable size and 
+          optional)</em><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Checksum</td>
+        </tr>
+
+      </table>
+
+      <table class="note">
+        <tr>
+            <td width="60%">&nbsp;</td>
+            <td width="40%">
+            (Items marked with an &lsquo;O&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfOffsetsV0">Size 
+            of Offsets</a> field in the superblock.)
+            </td></tr>
+      </table>
+
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+        <caption>
+            Fields: Fixed Array Data Block
+        </caption>
+	<tr>
+          <th width="40%">Field Name</th>
+          <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Signature</p></td>
+          <td>
+            <p>The ASCII character string &ldquo;<code>FADB</code>&rdquo; 
+            is used to indicate the beginning of a Fixed Array data 
+            block. This gives file consistency checking utilities a 
+            better chance of reconstructing a damaged file.
+            </p>
+          </td>
+        </tr>
+          
+        <tr>
+          <td><p>Version</p></td>
+          <td>
+            <p>The value for this field is 1
+               and is introduced to support structured chunk.</p>
+          </td>
+        </tr>
+
+	<tr>
+          <td><p>Client ID</p></td>
+          <td>
+            <p>The ID for identifying the client of the
+                Fixed Array:
+
+                <table class="list">
+                    <tr>
+                      <th width="20%" align="center">ID</th>
+                      <th width="80%" align="left">Description</th>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>0</code></td>
+                      <td>Non-filtered dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>1</code></td>
+                      <td>Filtered dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>2</code></td>
+                      <td>Structured dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>3</code></td>
+                      <td>Filtered structured dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>4+</code></td>
+                      <td>Reserved.
+                      </td>
+                    </tr>
+                </table>
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Header Address</p></td>
+	  <td>
+	    <p>The address of the Fixed Array header. Principally used 
+        for file integrity checking.
+            </p>
+	  </td>
+        </tr>
+
+	<tr>
+	  <td><p>Page Bitmap</p></td>
+	  <td><p>A bitmap indicating which data block pages are initialized.</p>
+	      <p>Exists only if the data block is paged.</p></td>
+	</tr>
+	
+	<tr>
+	  <td><p>Elements</p></td>
+	  <td>
+	    <p>Contains the elements stored in the data block 
+        and exists only if the data block is not paged.
+	    There are four element types:
+                <table class="list">
+                    <tr>
+                      <th width="20%" align="center">ID</th>
+                      <th width="80%" align="left">Description</th>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>0</code></td>
+                      <td><a href="#FaNonFilterChunk">Non-filtered 
+                      dataset chunks</i></a>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>1</code></td>
+                      <td><a href="#FaFilterChunk">Filtered dataset 
+                      chunks</i></a>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>2</code></td>
+                      <td><a href="#FaStructNonFilterChunk">Structured dataset 
+                      chunks</i></a>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>3</code></td>
+                      <td><a href="#FaStructFilterChunk">Filtered structured
+                      dataset chunks</i></a>
+                      </td>
+                    </tr>
+
+                </table>
+	    </p>
+	  </td>
+	</tr>
+
+        <tr>
+          <td><p>Checksum</p></td>
+          <td>
+            <p>The checksum for the Fixed Array data block.</p>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <div align="center">
+      <table class="format">
+        <caption><a name="FADataBlockPage">
+            Layout: Fixed Array Data Block Page</a>
+        </caption>
+
+        <tr>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Elements <em>(variable 
+          size)</em><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Checksum</td>
+        </tr>
+
+      </table>
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+        <caption>
+            Fields: Fixed Array Data Block Page
+        </caption>
+	<tr>
+          <th width="40%">Field Name</th>
+          <th>Description</th>
+        </tr>
+
+	<tr>
+	  <td><p>Elements</p></td>
+	  <td>
+	    <p>Contains the elements stored in the data block page.
+	    There are four element types:
+                <table class="list">
+                    <tr>
+                      <th width="20%" align="center">ID</th>
+                      <th width="80%" align="left">Description</th>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>0</code></td>
+                      <td><a href="#FaNonFilterChunk">Non-filtered dataset chunks</i></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>1</code></td>
+                      <td><a href="#FaFilterChunk">Filtered dataset chunks</i></a>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>2</code></td>
+                      <td><a href="#FaStructNonFilterChunk">Structured dataset chunks</i></a>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>3</code></td>
+                      <td><a href="#FaStructFilterChunk">Filtered Structured dataset chunks</i></a>
+                      </td>
+                    </tr>
+
+                </table>
+	    </p>
+	  </td>
+	</tr>
+
+        <tr>
+          <td><p>Checksum</p></td>
+          <td>
+            <p>The checksum for a Fixed Array data block page.</p>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <a name="FaStructNonFilterChunk"></a>
+    <div align="center">
+      <table class="format">
+    <caption>
+        Layout: Data Block Element for Structured Dataset Chunk
+    </caption>
+
+	<tr>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	</tr>
+
+	<tr>
+	  <td colspan="4"><br />Address<sup>O</sup><br /><br /></td>
+	</tr>
+
+	<tr>
+	  <td colspan="4"><br />Chunk Size <em>(variable size; at most 8 bytes)</em><br /><br /></td>
+	</tr>
+
+	<tr>
+	  <td colspan="4"><br />Structured Chunk Metadata <em>(variable size, but fixed within any one index)</em><br /><br /></td>
+	</tr>
+
+      </table>
+
+      <table class="note">
+        <tr>
+            <td width="60%">&nbsp;</td>
+            <td width="40%">
+            (Items marked with an &lsquo;O&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfOffsetsV0">Size 
+            of Offsets</a> field in the superblock.)
+            </td></tr>
+      </table>
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+    <caption>
+        Fields: Data Block Element for Structured Dataset Chunk
+    </caption>
+	<tr>
+          <th width="30%">Field Name</th>
+          <th>Description</th>
+	</tr>
+
+	<tr>
+	  <td><p>Address</p></td>
+	  <td><p>The address of the dataset chunk in the file.
+              </p>
+          </td>
+	</tr>
+
+	<tr>
+	  <td><p>Chunk Size</p></td>
+	  <td><p>The size of the dataset chunk in bytes (at most 8 bytes).</p>
+          </td>
+	</tr>
+
+    <tr>
+        <td><p>Structured Chunk Metadata</p></td>
+        <td><p>See <a href="#StructChunkMeta"><i>Structured Chunk Metadata</i></a></p></td>
+    </tr>
+
+      </table>
+    </div>
+<!--    </p> -->
+
+    <br />
+    <br />
+    <br />
+    <a name="FaStructFilterChunk"></a>
+    <div align="center">
+      <table class="format">
+    <caption>
+        Layout: Data Block Element for Filtered Structured Dataset Chunk
+    </caption>
+
+	<tr>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	</tr>
+
+	<tr>
+	  <td colspan="4"><br />Address<sup>O</sup><br /><br /></td>
+	</tr>
+
+	<tr>
+	  <td colspan="4"><br />Chunk Size <em>(variable size)</em><br /><br /></td>
+	</tr>
+
+	<tr>
+	  <td colspan="4"><br />Filtered Structured Chunk Metadata<em>(variable size, but fixed within any one index)</em><br /><br /></td>
+	</tr>
+
+      </table>
+
+      <table class="note">
+        <tr>
+            <td width="60%">&nbsp;</td>
+            <td width="40%">
+            (Items marked with an &lsquo;O&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfOffsetsV0">Size 
+            of Offsets</a> field in the superblock.)
+            </td></tr>
+      </table>
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+    <caption>
+        Fields: Data Block Element for Filtered Structured Dataset Chunk
+    </caption>
+	<tr>
+          <th width="30%">Field Name</th>
+          <th>Description</th>
+	</tr>
+
+	<tr>
+	  <td><p>Address</p></td>
+	  <td><p>The address of the dataset chunk in the file.
+              </p>
+          </td>
+	</tr>
+
+	<tr>
+	  <td><p>Chunk Size</p></td>
+	  <td><p>The size of the dataset chunk in bytes.
+              </p>
+          </td>
+	</tr>
+
+    <tr>
+        <td><p>Filtered Structured Chunk Metadata</p></td>
+        <td><p>See <a href="#FilterStructChunkMeta"><i>Filtered Structured Chunk Metadata</i></a></p></td>
+    </tr>
+
+      </table>
+    </div>
+
     <a name="ExtensibleArray">
     <h3>VII.D. The Extensible Array Index</h3></a>
     
@@ -17744,6 +19836,12 @@ dataset&rsquo;s dimension specification and the way it is extended.
     blocks/pages in a chunk index varies as they are allocated as 
     needed and the first few are (conceptually) stored in parent 
     elements as an optimization.</p>
+
+    <p>To support structured chunk, a new version (version 1) is added
+    to the extensible array index structures as well as new client IDs and
+    element types.  See <a href="#ExtensibleArrayV1">Extensible Array version 1</a>.
+    </p>
+    <br />
     
     <div align="center">
       <table class="format">
@@ -18751,22 +20849,1126 @@ dataset&rsquo;s dimension specification and the way it is extended.
       </table>
     </div>
 
+</br>
+</br>
+</br>
+Version 1 of the Extensible Array index:
+<br />
+
+    <a name="ExtensibleArrayV1"></a>
+    <div align="center">
+      <table class="format">
+        <caption>
+            Layout: Extensible Array Header
+        </caption>
+
+        <tr>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4">Signature</td>
+        </tr>
+          
+        <tr>
+          <td>Version</td>
+          <td>Client ID</td>
+          <td>Element Size</td>
+          <td>Max Nelmts Bits</td>
+	</tr>
+
+	<tr>
+          <td>Index Blk Elmts</td>
+          <td>Data Blk Min Elmts</td>
+          <td>Secondary Blk Min Data Ptrs</td>
+          <td>Max Data Blk Page Nelmts Bits</td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Num Secondary Blks<sup>L</sup><br /><br /></td>
+        </tr>
+        <tr>
+          <td colspan="4"><br />Secondary Blk Size<sup>L</sup><br /><br /></td>
+        </tr>
+        <tr>
+          <td colspan="4"><br />Num Data Blks<sup>L</sup><br /><br /></td>
+        </tr>
+        <tr>
+          <td colspan="4"><br />Data Blk Size<sup>L</sup><br /><br /></td>
+        </tr>
+        <tr>
+          <td colspan="4"><br />Max Index Set<sup>L</sup><br /><br /></td>
+        </tr>
+        <tr>
+          <td colspan="4"><br />Num Elements<sup>L</sup><br /><br /></td>
+        </tr>
+          
+        <tr>
+          <td colspan="4"><br />Index Block Address<sup>O</sup><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Checksum</td>
+        </tr>
+
+      </table>
+
+      <table class="note">
+        <tr>
+            <td width="60%">&nbsp;</td>
+            <td width="40%">
+            (Items marked with an &lsquo;L&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfLengthsV0">Size 
+            of Lengths</a> field in the superblock.)
+            </td></tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+            (Items marked with an &lsquo;O&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfOffsetsV0">Size 
+            of Offsets</a> field in the superblock.)
+            </td></tr>
+      </table>
+
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+        <caption>
+            Fields: Extensible Array Header
+        </caption>
+	<tr>
+          <th width="40%">Field Name</th>
+          <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Signature</p></td>
+          <td>
+            <p>The ASCII character string &ldquo;<code>EAHD</code>&rdquo; 
+            is used to indicate the beginning of an Extensible Array 
+            header. This gives file consistency checking utilities a 
+            better chance of reconstructing a damaged file.
+            </p>
+          </td>
+        </tr>
+          
+        <tr>
+          <td><p>Version</p></td>
+          <td>
+            <p>The value for this field is 1
+               and is introduced to support structured chunk.</p>
+          </td>
+        </tr>
+
+	<tr>
+          <td><p>Client ID</p></td>
+          <td>
+            <p>The ID for identifying the client of the
+                Extensible Array:
+
+                <table class="list">
+                    <tr>
+                      <th width="20%" align="center">ID</th>
+                      <th width="80%" align="left">Description</th>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>0</code></td>
+                      <td>Non-filtered dataset chunks
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>1</code></td>
+                      <td>Filtered dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>2</code></td>
+                      <td>Structured dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>3</code></td>
+                      <td>Filtered structured dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>4+</code></td>
+                      <td>Reserved.
+                      </td>
+                    </tr>
+                </table>
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Element Size</p></td>
+	  <td>
+	    <p>The size in bytes of an element in the Extensible Array.
+            </p>
+	  </td>
+        </tr>
+
+	<tr>
+	  <td><p>Max Nelmts Bits</p></td>
+	  <td>
+            <p>The number of bits needed to store the 
+            maximum number of elements in the Extensible Array.</p>
+          </td>
+	</tr>
+	
+	<tr>
+	  <td><p>Index Blk Elmts</p></td>
+	  <td>
+	    <p>The number of elements to store in the index block.
+	    </p>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td><p>Data Blk Min Elmts</p></td>
+	  <td>
+	    <p>The minimum number of elements per data block.
+	    </p>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td><p>Secondary Blk Min Data Ptrs</p></td>
+	  <td>
+	    <p>The minimum number of data block pointers for a 
+	    secondary block.
+	    </p>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td><p>Max Dblk Page Nelmts Bits</p></td>
+	  <td>
+	    <p>The number of bits needed to store the maximum number
+	    of elements in a data block page.
+	    </p>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td><p>Num Secondary Blks</p></td>
+	  <td>
+	    <p>The number of secondary blocks created.
+	    </p>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td><p>Secondary Blk Size</p></td>
+	  <td>
+	    <p>The size of the secondary blocks created.
+	    </p>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td><p>Num Data Blks</p></td>
+	  <td>
+	    <p>The number of data blocks created.
+	    </p>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td><p>Data Blk Size</p></td>
+	  <td>
+	    <p>The size of the data blocks created.
+	    </p>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td><p>Max Index Set</p></td>
+	  <td>
+	    <p>The maximum index set.
+	    </p>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td><p>Num Elmts</p></td>
+	  <td>
+	    <p>The number of elements realized.
+	    </p>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td><p>Index Block Address</p></td>
+	  <td>
+	    <p>The address of the index block.
+	    </p>
+	  </td>
+	</tr>
+
+        <tr>
+          <td><p>Checksum</p></td>
+          <td>
+            <p>The checksum for the header.</p>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <div align="center">
+      <table class="format">
+        <caption>
+            Layout: Extensible Array Index Block
+        </caption>
+
+        <tr>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4">Signature</td>
+        </tr>
+          
+        <tr>
+          <td>Version</td>
+          <td>Client ID</td>
+          <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted 
+          only to align table nicely</em></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Header Address<sup>O</sup><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Elements <em>(variable size and 
+          optional)</em><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Data Block Addresses <em>(variable 
+          size and optional)</em><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Secondary Block Addresses <em>(variable 
+          size and optional)</em><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Checksum</td>
+        </tr>
+
+      </table>
+
+      <table class="note">
+        <tr>
+            <td width="60%">&nbsp;</td>
+            <td width="40%">
+            (Items marked with an &lsquo;O&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfOffsetsV0">Size 
+            of Offsets</a> field in the superblock.)
+            </td></tr>
+      </table>
+
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+        <caption>
+            Fields: Extensible Array Index Block
+        </caption>
+	<tr>
+          <th width="40%">Field Name</th>
+          <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Signature</p></td>
+          <td>
+            <p>The ASCII character string &ldquo;<code>EAIB</code>&rdquo; 
+            is used to indicate the beginning of an Extensible Array 
+            Index Block. This gives file consistency checking utilities 
+            a better chance of reconstructing a damaged file.
+            </p>
+          </td>
+        </tr>
+          
+        <tr>
+          <td><p>Version</p></td>
+          <td>
+            <p>The value for this field is 1
+               and is introduced to support structured chunk.</p>
+          </td>
+        </tr>
+
+	<tr>
+          <td><p>Client ID</p></td>
+          <td>
+            <p>The client ID for identifying the user of the
+                Extensible Array:
+
+                <table class="list">
+                    <tr>
+                      <th width="20%" align="center">ID</th>
+                      <th width="80%" align="left">Description</th>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>0</code></td>
+                      <td>Non-filtered dataset chunks
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>1</code></td>
+                      <td>Filtered dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>2</code></td>
+                      <td>Structured dataset chunks
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>3</code></td>
+                      <td>Filtered structured dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>4+</code></td>
+                      <td>Reserved.
+                      </td>
+                    </tr>
+                </table>
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Header Address</p></td>
+	  <td>
+	    <p>The address of the Extensible Array header. Principally 
+        used for file integrity checking.</p>
+	  </td>
+        </tr>
+
+	<tr>
+	  <td><p>Elements</p></td>
+	  <td>
+	    <p>Contains the elements that are stored directly in 
+        the index block. An optimization to avoid unnecessary 
+        secondary blocks. 
+        <br />
+        <br />
+        There are four element types:
+                <table class="list">
+                    <tr>
+                      <th width="20%" align="center">ID</th>
+                      <th width="80%" align="left">Description</th>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>0</code></td>
+                      <td><a href="#EaNonFilterChunk">Non-filtered dataset chunks</i></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>1</code></td>
+                      <td><a href="#EaFilterChunk">Filtered dataset chunks</i></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>2</code></td>
+                      <td><a href="#EaStructNonFilterChunk">Structured dataset chunks</i></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>3</code></td>
+                      <td><a href="#EaStructFilterChunk">Filtered structured dataset chunks</i></a>
+                      </td>
+                    </tr>
+                </table>
+	    </p>
+	  </td>
+	</tr>
+
+        <tr>
+          <td><p>Data Block Addresses</p></td>
+          <td>
+            <p>Contains the addresses of the data blocks 
+            that are stored directly in the Index Block. An 
+            optimization to avoid unnecessary secondary blocks.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Secondary Block Addresses</p></td>
+          <td>
+            <p>Contains the addresses of the secondary 
+            blocks.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Checksum</p></td>
+          <td>
+            <p>The checksum for the Extensible Array Index Block.</p>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <div align="center">
+      <table class="format">
+        <caption>
+            Layout: Extensible Array Secondary Block
+        </caption>
+
+        <tr>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4">Signature</td>
+        </tr>
+          
+        <tr>
+          <td>Version</td>
+          <td>Client ID</td>
+          <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted 
+          only to align table nicely</em></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Header Address<sup>O</sup><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Block Offset <em>(variable 
+          size)</em><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Page Bitmap <em>(variable size and 
+          optional)</em><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Data Block Addresses <em>(variable 
+          size and optional)</em><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Checksum</td>
+        </tr>
+
+      </table>
+
+      <table class="note">
+        <tr>
+            <td width="60%">&nbsp;</td>
+            <td width="40%">
+            (Items marked with an &lsquo;O&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfOffsetsV0">Size 
+            of Offsets</a> field in the superblock.)
+            </td></tr>
+      </table>
+
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+        <caption>
+            Fields: Extensible Array Secondary Block
+        </caption>
+	<tr>
+          <th width="40%">Field Name</th>
+          <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Signature</p></td>
+          <td>
+            <p>The ASCII character string &ldquo;<code>EASB</code>&rdquo; 
+            is used to indicate the beginning of an Extensible Array 
+            Secondary Block. This gives file consistency checking utilities 
+            a better chance of reconstructing a damaged file.
+            </p>
+          </td>
+        </tr>
+          
+        <tr>
+          <td><p>Version</p></td>
+          <td>
+            <p>The value for this field is 1
+               and is introduced to support structured chunk.</p>
+          </td>
+        </tr>
+
+	<tr>
+          <td><p>Client ID</p></td>
+          <td>
+            <p>The ID for identifying the client of the
+                Extensible Array:
+
+                <table class="list">
+                    <tr>
+                      <th width="20%" align="center">ID</th>
+                      <th width="80%" align="left">Description</th>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>0</code></td>
+                      <td>Non-filtered dataset chunks
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>1</code></td>
+                      <td>Filtered dataset chunks
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>2</code></td>
+                      <td>Structured dataset chunks
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>3</code></td>
+                      <td>Filtered structured dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>4+</code></td>
+                      <td>Reserved.
+                      </td>
+                    </tr>
+                </table>
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Header Address</p></td>
+	  <td>
+	    <p>The address of the Extensible Array header. Principally 
+        used for file integrity checking.</p>
+	  </td>
+        </tr>
+
+        <tr>
+          <td><p>Block Offset</p></td>
+	  <td>
+	    <p>Stores the offset of the block in the array.
+            </p>
+	  </td>
+        </tr>
+
+	<tr>
+	  <td><p>Page Bitmap</p></td>
+	  <td>
+            <p>A bitmap indicating which
+            data block pages are initialized.
+	    <p>
+	    Exists only if the data block is paged.
+          </td>
+	</tr>
+	
+        <tr>
+          <td><p>Data Block Addresses</p></td>
+          <td>
+            <p>Contains the addresses of the data blocks 
+            referenced by this secondary block.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Checksum</p></td>
+          <td>
+            <p>The checksum for the Extensible Array 
+            Secondary Block.</p>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <div align="center">
+      <table class="format">
+        <caption>
+            Layout: Extensible Array Data Block
+        </caption>
+
+        <tr>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4">Signature</td>
+        </tr>
+          
+        <tr>
+          <td>Version</td>
+          <td>Client ID</td>
+          <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted 
+          only to align table nicely</em></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Header Address<sup>O</sup><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Block Offset <em>(variable 
+          size)</em><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Elements <em>(variable size and 
+          optional)</em><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Checksum</td>
+        </tr>
+
+      </table>
+
+      <table class="note">
+        <tr>
+            <td width="60%">&nbsp;</td>
+            <td width="40%">
+            (Items marked with an &lsquo;O&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfOffsetsV0">Size 
+            of Offsets</a> field in the superblock.)
+            </td></tr>
+      </table>
+
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+        <caption>
+            Fields: Extensible Array Data Block
+        </caption>
+	<tr>
+          <th width="40%">Field Name</th>
+          <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Signature</p></td>
+          <td>
+            <p>The ASCII character string &ldquo;<code>EADB</code>&rdquo; 
+            is used to indicate the beginning of an Extensible Array 
+            data block. This gives file consistency checking utilities 
+            a better chance of reconstructing a damaged file.
+            </p>
+          </td>
+        </tr>
+          
+        <tr>
+          <td><p>Version</p></td>
+          <td>
+            <p>The value for this field is 1
+               and is introduced to support structured chunk.</p>
+          </td>
+        </tr>
+
+	<tr>
+          <td><p>Client ID</p></td>
+          <td>
+            <p>The ID for identifying the client of the
+                Extensible Array:
+
+                <table class="list">
+                    <tr>
+                      <th width="20%" align="center">ID</th>
+                      <th width="80%" align="left">Description</th>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>0</code></td>
+                      <td>Non-filtered dataset chunks
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>1</code></td>
+                      <td>Filtered dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>2</code></td>
+                      <td>Structured dataset chunks
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>3</code></td>
+                      <td>Filtered structured dataset chunks
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>4+</code></td>
+                      <td>Reserved.
+                      </td>
+                    </tr>
+                </table>
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Header Address</p></td>
+	  <td>
+	    <p>The address of the Extensible Array header. Principally 
+        used for file integrity checking.
+            </p>
+	  </td>
+        </tr>
+
+	<tr>
+	  <td><p>Block Offset</p></td>
+	  <td>
+            <p>The offset of the block in the array.
+          </td>
+	</tr>
+	
+	<tr>
+	  <td><p>Elements</p></td>
+	  <td>
+	    <p>Contains the elements stored in the data block and
+		exists only if the data block is not paged.
+        <br />
+        <br />
+	    There are four element types:
+                <table class="list">
+                    <tr>
+                      <th width="20%" align="center">ID</th>
+                      <th width="80%" align="left">Description</th>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>0</code></td>
+                      <td><a href="#EaNonFilterChunk">Non-filtered dataset chunks</i></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>1</code></td>
+                      <td><a href="#EaFilterChunk">Filtered dataset chunks</i></a>
+                      </td>
+
+                    <tr>
+                      <td align="center"><code>2</code></td>
+                      <td><a href="#EaStructNonFilterChunk">Structured dataset chunks</i></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>3</code></td>
+                      <td><a href="#EaStructFilterChunk">Filtered structured dataset chunks</i></a>
+                      </td>
+
+                    </tr>
+                </table>
+	    </p>
+	  </td>
+	</tr>
+
+        <tr>
+          <td><p>Checksum</p></td>
+          <td>
+            <p>The checksum for the Extensible Array data block.</p>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+    
+    <br />
+    <br />
+    <br />
+    <div align="center">
+      <table class="format">
+        <caption>
+            Layout: Extensible Array Data Block Page
+        </caption>
+
+        <tr>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+          <th>byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Elements <em>(variable 
+          size)</em><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Checksum</td>
+        </tr>
+
+      </table>
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+        <caption>
+            Fields: Extensible Array Data Block Page
+        </caption>
+	<tr>
+          <th width="40%">Field Name</th>
+          <th>Description</th>
+        </tr>
+
+	<tr>
+	  <td><p>Elements</p></td>
+	  <td>
+	    <p>Contains the elements stored in the data block 
+        page.</p>
+        <p>
+	    There are four element types:
+                <table class="list">
+                    <tr>
+                      <th width="20%" align="center">ID</th>
+                      <th width="80%" align="left">Description</th>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>0</code></td>
+                      <td><a href="#EaNonFilterChunk">Non-filtered dataset chunks</i></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>1</code></td>
+                      <td><a href="#EaFilterChunk">Filtered dataset chunks</i></a>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td align="center"><code>2</code></td>
+                      <td><a href="#EaStructNonFilterChunk">Structured dataset chunks</i></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center"><code>3</code></td>
+                      <td><a href="#EaStructFilterChunk">Filtered structured dataset chunks</i></a>
+                      </td>
+                    </tr>
+                </table>
+	    </p>
+	  </td>
+	</tr>
+
+        <tr>
+          <td><p>Checksum</p></td>
+          <td>
+            <p>The checksum for an Extensible Array data block 
+            page.</p>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <a name="EaStructNonFilterChunk"></a>
+    <div align="center">
+      <table class="format">
+    <caption>
+        Layout: Data Block Element for Structured Dataset Chunk
+    </caption>
+
+	<tr>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	</tr>
+
+	<tr>
+	  <td colspan="4"><br />Address<sup>O</sup><br /><br /></td>
+	</tr>
+
+	<tr>
+	  <td colspan="4"><br />Chunk size <em>(variable size; at most 8 bytes)</em> <br /><br /></td>
+	</tr>
+
+	<tr>
+	  <td colspan="4"><br />Structured Chunk Metadata <em>(variable size, but fixed within any one index)</em><br /><br /></td>
+	</tr>
+
+      </table>
+
+      <table class="note">
+        <tr><td>
+        <tr>
+            <td width="60%">&nbsp;</td>
+            <td width="40%">
+            (Items marked with an &lsquo;O&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfOffsetsV0">Size 
+            of Offsets</a> field in the superblock.)
+            </td></tr>
+      </table>
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+    <caption>
+        Fields: Data Block Element for Structured Dataset Chunk
+    </caption>
+	<tr>
+          <th width="30%">Field Name</th>
+          <th>Description</th>
+	</tr>
+
+	<tr>
+	  <td><p>Address</p></td>
+	  <td><p>The address of the dataset chunk in the file.
+              </p>
+          </td>
+	</tr>
+
+	<tr>
+	  <td><p>Chunk Size</p></td>
+	  <td><p>The size of the dataset chunk in bytes (at most 8 bytes).</p>
+          </td>
+	</tr>
+
+    <tr>
+        <td><p>Structured Chunk Metadata</p></td>
+        <td><p>See <a href="#StructChunkMeta"><i>Structured Chunk Metadata</i></a></p></td>
+    </tr>
+
+      </table>
+    </div>
+    </p>
+
+    <br />
+    <br />
+    <br />
+    <a name="EaStructFilterChunk"></a>
+    <div align="center">
+      <table class="format">
+    <caption>
+        Layout: Data Block Element for Filtered Structured Dataset Chunk
+    </caption>
+
+	<tr>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	  <th width="25%">byte</th>
+	</tr>
+
+	<tr>
+	  <td colspan="4"><br />Address<sup>O</sup><br /><br /></td>
+	</tr>
+
+	<tr>
+	  <td colspan="4"><br />Chunk Size<em> (variable size; at 
+      most 8 bytes)</em><br /><br /></td>
+	</tr>
+
+	<tr>
+	  <td colspan="4"><br />Filtered Structured Chunk Metadata <em>(variable size, but fixed within any one index)</em><br /><br /></td>
+	</tr>
+
+      </table>
+
+      <table class="note">
+        <tr>
+            <td width="60%">&nbsp;</td>
+            <td width="40%">
+            (Items marked with an &lsquo;O&rsquo; in the above table are
+            of the size specified in the <a href="#SizeOfOffsetsV0">Size 
+            of Offsets</a> field in the superblock.)
+            </td></tr>
+      </table>
+    </div>
+
+    <br />
+    <div align="center">
+      <table class="desc">
+    <caption>
+        Fields: Data Block Element for Filtered Structured Dataset Chunk
+    </caption>
+	<tr>
+          <th width="30%">Field Name</th>
+          <th>Description</th>
+	</tr>
+
+	<tr>
+	  <td><p>Address</p></td>
+	  <td><p>The address of the dataset chunk in the file.
+              </p>
+          </td>
+	</tr>
+
+	<tr>
+	  <td><p>Chunk Size</p></td>
+	  <td><p>The size of the dataset chunk in bytes.
+              </p>
+          </td>
+	</tr>
+
+    <tr>
+        <td><p>Filtered Structured Chunk Metadata</p></td>
+        <td><p>See <a href="#FilterStructChunkMeta"><i>Filtered Structured Chunk Metadata</i></a></p></td>
+    </tr>
+
+      </table>
+    </div>
+
     <a name="AppendV2Btrees">
     <h3>VII.E. The Version 2 B-trees Index</h3></a>
     
-    <p>The <i>Version 2 B-trees</i> index can be used when the dataset 
-    fulfills the following condition:</p>
-    
-    <ul>
-    <li>more than one dimension of unlimited extent</li>
-    </ul>
-    
-    <p>Version 2 B-trees can be used to index various objects in the 
-    library. See <a href="#V2Btrees">&ldquo;Version 2 B-trees&rdquo;</a> 
-    for more information. The B-tree types <a href="#V2BtType10">10</a> 
-    and <a href="#V2BtreesType11">11</a> record layouts are for 
-    indexing dataset chunks.</p>
+    Version 2 B-trees can be used to index various objects in the library.
+    See detailed information in the section on <a href="#V2Btrees">Version 2 B-trees</a>.
 
+</br>
+</br>
 <h2><a name="AppendixD"> VIII. Appendix D: 
 Encoding for dataspace and reference</a></h2>
 
@@ -20395,10 +23597,407 @@ Encoding for dataspace and reference</a></h2>
       </table>
     </div>
 
-    <br />
+    <h2><a name="AppendixE"> VIII. Appendix E: 
+    Layout of Structured Chunk</a></h2>
+
+<p>A structured chunk consists of two parts:</p>
+<ol>
+<li>
+Metadata used to interpret and find the data in a structured chunk.
+It is described below as <em>Structured Chunk Metadata</em> (non-filtered) and
+<em>Filtered Structured Chunk Metadata</em> (filtered).
+</li>
+<li>
+The data is composed of N sections which describe the values contained within.
+It is described below as <em>Structured Chunk Data</em> (filtered and non-filtered).
+The data layout of a filtered structured chunk is the same as that of the non-filtered structured chunk.
+The only difference being that at least one of the sections has a filter pipeline defined 
+for it and may be filtered.  
+</li>
+</ol>
+</p>In the layout description below, note that N is the total number of sections in the structured chunk.
+</br>
+</br>
+        <a name="StructChunkMeta">
+        <div align="center">
+          <table class="format">
+        <caption>
+            Layout: Structured Chunk Metadata
+        </caption>
+
+        <tr>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4">Offset of Section 1</td>
+        </tr>
+        <tr>
+          <td colspan="4">...</td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Offset of Section (N-1)</td>
+        </tr>
+
+          </table>
+
+        </div>
+
+        <br />
+        <div align="center">
+          <table class="desc">
+        <caption>
+            Fields: Structured Chunk Metadata
+        </caption>
+        <tr>
+              <th width="30%">Field Name</th>
+              <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Offset of Section <i>i</i></p></td>
+          <td><p>Offset in the structured chunk of the beginning of section <i>i</i> 
+                 where <i>i</i> is from 1 to (N-1).
+                 </p>Note that the numbering of sections is 0-based.  As the offset of section 0
+                 is presumed to be zero, it is therefore not recorded and starts with section 1
+                 (the second section).</p></td>
+        </tr>
+
+          </table>
+        </div>
+        </p>
+
+        <br />
+
+        <a name="FilterStructChunkMeta">
+        <div align="center">
+          <table class="format">
+        <caption>
+            Layout: Filtered Structured Chunk Metadata
+        </caption>
+
+        <tr>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4">Offset of Section 1</td>
+        </tr>
+        <tr>
+          <td colspan="4">...</td>
+        </tr>
+        <tr>
+          <td colspan="4">Offset of Section (N-1)</td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Unfiltered Size of Section 0</td>
+        </tr>
+        <tr>
+          <td colspan="4">...</td>
+        </tr>
+        <tr>
+          <td colspan="4"><br />Unfiltered Size of Section (N-1)<br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Filter Mask of Section 0</td>
+        </tr>
+        <tr>
+          <td colspan="4">...</td>
+        </tr>
+        <tr>
+          <td colspan="4"><br />Filter Mask of Section (N-1)<br /></td>
+        </tr>
+
+          </table>
+
+        </div>
+
+        <br />
+        <div align="center">
+          <table class="desc">
+        <caption>
+            Fields: Filtered Structured Chunk Metadata
+        </caption>
+        <tr>
+              <th width="30%">Field Name</th>
+              <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Offset of Section <i>i</i></p></td>
+          <td><p>Offset in the filtered structured chunk of each section
+                 where <i>i</i> is from 1 to (N-1).
+                 </p>Note that the numbering of sections is 0-based.  
+                 Since section 0 always starts at offset zero, the offset of 
+                 section 0 is omitted and starts with section 1 (the second section).</p></td>
+        </tr>
+
+        <tr>
+          <td><p>Unfiltered Size of Section <i>i</i></p></td>
+          <td><p>Unfiltered size of each section where <i>i</i> is from 0 to (N-1).
+                 </p>It will be zero if the section is empty.
+           </td>
+        </tr>
+
+        <tr>
+          <td><p>Filter Mask of Section <i>i</i></p></td>
+          <td><p>One filter mask per section of the filtered structured chunk
+                 where <i>i</i> is from 0 to (N-1).
+                 </p>If no pipeline is defined for the section, the filter mask is 0.
+           </td>
+        </tr>
+
+          </table>
+        </div>
+        </p>
+
+        <br />
+
+        <div align="center">
+          <table class="format">
+        <caption>
+            Layout: Structured Chunk Data (filtered and non-filtered)
+        </caption>
+
+        <tr>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Section 0 <em>(variable size - may be empty)</em><br /></td>
+        </tr>
+        <tr>
+          <td colspan="4"><br />Section 0 Checksum (<em>not not exist</em>)<br /></td>
+        <tr>
+          <td colspan="4"><br />... <br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Section (N-1) <em>(variable size - may be empty)</em><br /></td>
+        </tr>
+        <tr>
+          <td colspan="4"><br />Section (N-1) Checksum <em>(may not exist)</em><br /></td>
+        </tr>
+
+          </table>
+
+        </div>
+
+        <br />
+        <div align="center">
+          <table class="desc">
+        <caption>
+            Fields: Structured Chunk Data (filtered and non-filtered)
+        </caption>
+        <tr>
+              <th width="30%">Field Name</th>
+              <th>Description</th>
+        </tr>
+
+        <tr>
+          <td><p>Section <i>i</i></p></td>
+          <td><p>The data contained in section <i>i</i> of the structured chunk
+                 where <i>i</i> is from 0 to (N-1).
+                 </p>If the section is empty, the offset of section <i>(i+1)</i>
+                 will be the same as that of section <i>i</i>.
+                 </p></td>
+        </tr>
+
+        <tr>
+          <td><p>Section <i>i</i> Checksum</p></td>
+          <td><p>If section <i>i</i> contains metadata, the section <i>i</i> checksum must appear.
+                 </p>Note that for purposes of computing section offsets,
+                 the section <i>i</i> checksum is part of secton <i>i</i>.
+                 </p></td>
+        </tr>
+          </table>
+        </div>
+        </p>
+
     <br />
     <br />
 
+Three examples of structured chunk data layout are described below:
+<ol>
+<li>
+    Structured Chunk used for the storage of sparse dataset with fixed-length data
+    <p>
+    The structured chunk stores an encoded selection of the values defined in 
+    this chunk (section 0).  A checksum is required, as in this context, 
+    the encoded selection is effectively metadata.  To see this, 
+    observe that each entry in the selection contains a reference into the fixed 
+    length data section (section 1).
+    <p>
+    The fixed length data section (section 1) contains the values associated 
+    with the encoded selection of defined values.  Its name is derived from 
+    the fact that each datum in it must be of the same length.  
+    If the selection is empty, this section will be of zero length.
+</li>
+    </br>
+        <a name="StructChunkSparseFixed">
+        <div align="center">
+          <table class="format">
+        <caption>
+            Layout: Structured Chunk Layout for Sparse Dataset of Fixed-size Datatype
+        </caption>
+
+        <tr>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Encoded Selection of Defined Elements <em>(Section 0)</em><br /></td>
+        </tr>
+        <tr>
+          <td colspan="4"><br />Section 0 Checksum<br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Fixed Length Data Section <em>(Section 1)</em><br /></td>
+        </tr>
+
+          </table>
+
+        </div>
+    <br />
+    <br />
+
+<li>
+    Structured Chunk used for the storage of sparse dataset with variable-length data
+    <p>
+    Section 0 contains an encoded selection of values defined in the structured chunk 
+    with its checksum. 
+    <p>
+    Section 1 contains the fixed length data section.  Entries in this section are 
+    still fixed length, and any variable-length data is represented with 
+    offset/length pairs referencing entries in the variable size data heap.  
+    However, since these offset/length pairs are metadata, section 1 now requires a checksum.
+    <p>
+    Conceptually, the variable size data heap (section 2) is just a buffer containing 
+    the variable-length data referenced in the fixed length data section.  
+    To allow tracking of the number of unused bytes in the heap, 
+    the first four bytes of the heap are reserved to store this value.  
+    Since variable-length data can contain references to other variable-length data, 
+    it is possible that the variable-length data heap will contain metadata
+    which makes a checksum necessary for section 2 as well.
+    <p>
+    If the fixed length data section contains no references to variable-length data, 
+    the variable-size data heap will be empty.  In this case, the variable size 
+    data heap doesn’t exist, and section 2 will be of zero length.
+    <p>
+    Similarly, if the selection is the empty selection, the fixed length data 
+    section is empty, and thus section 1 will be of zero length.
+</li>
+
+    <br />
+        <a name="StructChunkSparseVariable">
+        <div align="center">
+          <table class="format">
+        <caption>
+            Layout: Structured Chunk Layout for Sparse Dataset of Variable-size Datatype
+        </caption>
+
+        <tr>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Encoded Selection of Defined Elements <em>(Section 0)</em><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Section 0 Checksum<br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Fixed Length Data Section <em>(Section 1)</em><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Section 1 Checksum<br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Variable-size Data Heap <em>(Section 2)</em><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Checksum for Variable-size Data Heap <em>(Section 2 Checksum)</em><br /></td>
+        </tr>
+
+          </table>
+
+        </div>
+    <br />
+    <br />
+
+<li>
+    Possible use of Structured Chunk to represent dense dataset with variable-length data
+    <p>
+    When used for dense datasets with data, the content of the fixed length 
+    data section (section 0) is all but identical to the contents of an existing chunk 
+    in a dataset containing variable-length data.  The difference is that instead of 
+    representing variable-length data with references into global heaps, variable 
+    size data is stored in the variable size data heap in section 1, 
+    and referenced by offset/length pairs.  
+    Section 0 requires a checksum, as these offset/length pairs are metadata.
+</li>
+    <br />
+        <a name="StructChunkDenseVariable">
+        <div align="center">
+          <table class="format">
+        <caption>
+            Layout: Structured Chunk Layout for Dense Dataset of Variable-size Datatype
+        </caption>
+
+        <tr>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+          <th width="25%">byte</th>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Fixed Length Data Section <em>(Section 0)</em><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Section 0 Checksum<br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Variable-size Data Heap <em>(Section 1)</em><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4"><br />Checksum for Variable-size Data Heap <em>(Section 1 Checksum)</em><br /></td>
+        </tr>
+
+          </table>
+
+        </div>
+    <br />
+    <br />
+
+</ol>
 
 </body>
 </html>
