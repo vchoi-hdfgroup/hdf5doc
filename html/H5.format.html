@@ -1,7 +1,7 @@
 </em><html>
   <head>
     <title>
-      HDF5 File Format Specification Version 3.0
+      HDF5 File Format Specification Version 3.1
     </title>
 
 <style>
@@ -189,7 +189,7 @@ div {   page-break-inside:avoid;
 <!-- #EndLibraryItem -->
 
 <center>
-<h1>HDF5 File Format Specification Version 3.0</h1>
+<h1>HDF5 File Format Specification Version 3.1</h1>
 </center>
 
     <center>
@@ -489,14 +489,43 @@ div {   page-break-inside:avoid;
     <p>Links to sections added or updated for structured chunk:
 
     <ul>
-    <li><a href="#DataLayoutMessageV5">The Data Layout Message: version 5</a> in section IV.A.2.i</li>
-    <li><a href="#FilterMessageV3">The Data Storage - Filter Pipeline Message: version 3</a> in section IV.A.2.l</li>
-    <li><a href="#FixedArrayV1">Fixed Array index: version 1</a> in Appendix C</li>
-    <li><a href="#ExtensibleArrayV1">Extensible Array index: version 1</a> in Appendix C</li>
-    <li><a href="#V1HeaderV2Btrees">Version 2 B-tree index: version 1 header</a> in section III.A.2</li>
-    <li><a href="#AppendixE">Appendix E: Layout of Structured Chunk</a></li>
-    </ul>
+    <li>The version for this File Format Specification is changed from 3.0 to 3.1.</li>
+    <p>
+    <li><a href="#AppendixE">Section IX Appendix E: Layout of Structured Chunk</a></li>
+    Describes the storage layouts of non-filtered and filtered structured chunk and
+    their corresponding metadata.  It also contains layouts for three example 
+    usage of structured chunks.
 
+    <p>
+    <li><a href="#DataLayoutMessageV5">The Data Layout Message: version 5</a>
+        in section <a href="#LayoutMessage">IV.A.2.i</a></li>
+    Describes the new version of the message for supporting structured chunk storage.
+
+    <p>
+    <li><a href="#FilterMessageV3">The Data Storage - Filter Pipeline Message: version 3</a>
+        in section <a href="#FilterMessage">IV.A.2.l</a></li>
+    Describes the new version of the message that extends the filtering capability to each
+    section of the structured chunk storage.
+
+    <p>
+    <li><a href="#FixedArrayV1">Fixed Array index: version 1</a>
+        in section <a href="#FixedArray">VII.C</a> Appendix C </li>
+    Describes the changes to the existing Fixed Array chunk index to accommodate 
+    non-filtered and filtered structured chunk metadata.
+
+    <p>
+    <li><a href="#ExtensibleArrayV1">Extensible Array index: version 1</a> 
+        in section <a href="#ExtensibleArray">VII.D</a> Appendix C</li>
+    Describes the changes to the existing Extensible Array chunk index to accommodate 
+    non-filtered and filtered structured chunk metadata.
+
+    <p>
+    <li><a href="#V1HeaderV2Btrees">Version 2 B-tree index: version 1 header</a>
+        in section <a href="#V2Btrees">III.A.2</a></li>
+    Describes the changes to the existing Version 2 B-tree chunk index to accommodate 
+    non-filtered and filtered structured chunk metadata.
+
+    </ul>
 
 <a name="ChangesForHdf5_1_12">
 <h3>I.C. Changes for HDF5 1.12</h3></a>
@@ -1941,17 +1970,17 @@ III.A.2. Disk Format: Level 1A2 - Version 2 B-trees</a></h4>
        type <a href="#V2BtreesType10">10</a> and type
        <a href="#V2BtreesType11">11</a> B-tree record layouts are for 
        indexing dataset chunks.</p>
-    <p>Version 0 is the initial version of the Version 2 B-tree header.  
+    <p><mark>Version 0 is the initial version of the Version 2 B-tree header.  
        To support structured chunk, a new version (version 1) with two
-       new B-tree types is added to the header.  See information listed below:
+       new B-tree types is added to the header.  See information listed below:</mark>
     <ul>
-    <li><p>See <a href="#V1HeaderV2Btrees">version 1 of the version 2 B-tree header.</a></li>
-    <li><p>See <a href="#V2BtreesType12">Type 12 B-tree</a> which is used
+    <li><p><mark>See <a href="#V1HeaderV2Btrees">version 1 of the version 2 B-tree header.</a></mark></li>
+    <li><p><mark>See <a href="#V2BtreesType12">Type 12 B-tree</a> which is used
     for indexing structured chunks of datasets with no filters and
-    with more than on dimension of unlimited extent.</li>
-    <li><p>See <a href="#V2BtreesType13">Type 13 B-tree</a> which is used
+    with more than on dimension of unlimited extent.</mark></li>
+    <li><p><mark>See <a href="#V2BtreesType13">Type 13 B-tree</a> which is used
     for indexing filtered structured chunks of datasets 
-    with more than on dimension of unlimited extent.</li>
+    with more than on dimension of unlimited extent.</mark></li>
     </ul>
 
     <div align="center">
@@ -3612,15 +3641,15 @@ III.A.2. Disk Format: Level 1A2 - Version 2 B-trees</a></h4>
 
 </br>
 </br>
-Version 1 B-tree header for supporting structured chunks:
+    <a name="V1HeaderV2Btrees"></a>
+    <mark>Version 1 B-tree header for supporting structured chunks:</mark>
 </br>
 </br>
 
-    <a name="V1HeaderV2Btrees">
     <div align="center">
       <table class="format">
         <caption>
-            Layout: Version 2 B-tree Header
+            <mark>Layout: Version 2 B-tree Header</mark>
         </caption>
 
         <tr>
@@ -3633,8 +3662,8 @@ Version 1 B-tree header for supporting structured chunks:
           <td colspan="4">Signature</td>
         </tr>
         <tr>
-          <td>Version</td>
-          <td>Type</td>
+          <td><mark>Version</mark></td>
+          <td><mark>Type</mark></td>
           <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted only to align table nicely</em></td>
 	</tr>
 	<tr>
@@ -3687,7 +3716,7 @@ Version 1 B-tree header for supporting structured chunks:
     <div align="center">
       <table class="desc">
         <caption>
-            Fields: Version 2 B-tree Header
+            <mark>Fields: Version 2 B-tree Header</mark>
         </caption>
 
     <tr>
@@ -3706,17 +3735,17 @@ Version 1 B-tree header for supporting structured chunks:
         </tr>
 
         <tr>
-          <td><p>Version</p></td>
+          <td><p><mark>Version</mark></p></td>
           <td>
-            <p>The version number for this B-tree header.  The value
+            <p><mark>The version number for this B-tree header.  The value
                 for this field is 1 and is introduced to support
-                structured chunk.
+                structured chunk.</mark>
             </p>
           </td>
         </tr>
 
         <tr>
-          <td><p>Type</p></td>
+          <td><p><mark>Type</mark></p></td>
           <td>
             <p>This field indicates the type of B-tree:
             <table class="list">
@@ -3803,22 +3832,22 @@ Version 1 B-tree header for supporting structured chunks:
                 </tr>
 
                 <tr>
-                    <td align="center">12</td>
-                    <td>This B-tree is used for indexing structured chunks of 
+                    <td align="center"><mark>12</mark></td>
+                    <td><mark>This B-tree is used for indexing structured chunks of 
                     datasets with no filters and with more than on dimension 
-                    of unlimited extent.
+                    of unlimited extent.</mark>
                     </td>
                 </tr>
 
                 <tr>
-                    <td align="center">13</td>
-                    <td>This B-tree is used for indexing filtered structured chunks of 
-                    datasets with more than on dimension of unlimited extent.
+                    <td align="center"><mark>13</mark></td>
+                    <td><mark>This B-tree is used for indexing filtered structured chunks of 
+                    datasets with more than on dimension of unlimited extent.</mark>
                     </td>
                 </tr>
             </table></p>
-            <p>The format of records for type 12 and type 13 is described below.</p>
-            <p>The remaining types are described previously with version 0 header.</p>
+            <p><mark>The format of records for type 12 and type 13 is described below.</mark></p>
+            <p><mark>The remaining types are described previously with version 0 header.</mark></p>
           </td>
         </tr>
 
@@ -3907,8 +3936,8 @@ Version 1 B-tree header for supporting structured chunks:
     <div align="center">
       <table class="format">
         <caption>
-            Layout: Version 2 B-tree, Type 12 Record Layout - 
-            Unfiltered Structured Dataset Chunks</a>
+            <mark>Layout: Version 2 B-tree, Type 12 Record Layout - 
+            Unfiltered Structured Dataset Chunks</mark></a>
         </caption>
 
         <tr>
@@ -3968,8 +3997,8 @@ Version 1 B-tree header for supporting structured chunks:
     <div align="center">
       <table class="desc">
         <caption>
-            Fields: Version 2 B-tree, Type 12 Record Layout - 
-            Unfiltered Structured Dataset Chunks</a>
+            <mark>Fields: Version 2 B-tree, Type 12 Record Layout - 
+            Unfiltered Structured Dataset Chunks</mark>
         </caption>
 	<tr>
           <th width="30%">Field Name</th>
@@ -4018,8 +4047,8 @@ Version 1 B-tree header for supporting structured chunks:
     <div align="center">
       <table class="format">
         <caption>
-            Layout: Version 2 B-tree, Type 13 Record Layout - Filtered 
-            Structured Dataset Chunks </a>
+            <mark>Layout: Version 2 B-tree, Type 13 Record Layout - Filtered 
+            Structured Dataset Chunks</mark> </a>
         </caption>
 
         <tr>
@@ -4079,8 +4108,8 @@ Version 1 B-tree header for supporting structured chunks:
     <div align="center">
       <table class="desc">
         <caption>
-            Fields: Version 2 B-tree, Type 13 Record Layout - Filtered 
-            Structured Dataset Chunks </a>
+            <mark>Fields: Version 2 B-tree, Type 13 Record Layout - Filtered 
+            Structured Dataset Chunks</mark>
         </caption>
 
 	    <tr>
@@ -13241,10 +13270,10 @@ External Data Files Message</a></h4>
         (VDS) mapping information. The mapping associates the VDS to 
         the source dataset elements that are stored across a collection 
         of HDF5 files.</li>
-        <li>Structured Chunk: This is only supported for
+        <li><mark>Structured Chunk: This is only supported for
         <a href="#DataLayoutMessageV5">version 5 of the Data Layout message.</i></a>
-        For the layout of structured chunk, 
-        see <a href="#AppendixE">&ldquo;Appendix E: Layout of Structured Chunk&rdquo;</a></li>
+        See <a href="#AppendixE">&ldquo;Appendix E: Layout of Structured Chunk&rdquo;</a></mark>
+        for the layout of structured chunk.</li>
 
 
 
@@ -14542,14 +14571,14 @@ External Data Files Message</a></h4>
     <br />
     <br />
     <p><a name="DataLayoutMessageV5"></a> 
-    Version 5 of the Data Layout message for the structured chunk layout class.
+    <mark>Version 5 of the Data Layout message for the structured chunk layout class.</mark>
     <br />
     <br />
 
     <div align="center">
       <table class="format">
     <caption>
-        Layout: Data Layout Message (Version 5)
+        <mark>Layout: Data Layout Message (Version 5)</mark>
     </caption>
 
 	<tr>
@@ -14560,8 +14589,8 @@ External Data Files Message</a></h4>
 	</tr>
 
 	<tr>
-	  <td>Version</td>
-	  <td>Layout Class</td>
+	  <td><mark>Version</mark></td>
+	  <td><mark>Layout Class</mark></td>
           <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted 
           only to align table nicely</em></td>
 	</tr>
@@ -14577,7 +14606,7 @@ External Data Files Message</a></h4>
     <div align="center">
       <table class="desc">
     <caption>
-        Fields: Data Layout Message (Version 5)
+        <mark>Fields: Data Layout Message (Version 5)</mark>
     </caption>
 	<tr>
 	  <th width="30%">Field Name</th>
@@ -14585,16 +14614,16 @@ External Data Files Message</a></h4>
 	</tr>
 
 	<tr>
-	  <td><p>Version</p></td>
+	  <td><p><mark>Version</mark></p></td>
 	  <td>
-	    <p>The value for this field is 5. It is introduced
-        to support the structured chunk layout.
+	    <p><mark>The value for this field is 5. It is introduced
+        to support the structured chunk layout.</mark>
 	    </p>
 	  </td>
 	</tr>
 
 	<tr>
-	  <td><p>Layout Class</p></td>
+	  <td><p><mark>Layout Class</mark></p></td>
 	  <td><p>The layout class specifies the type of storage for the data
             and how the other fields of the layout message are to be
             interpreted.
@@ -14629,8 +14658,8 @@ External Data Files Message</a></h4>
             </tr>
 
             <tr>
-                <td align="center"><code>4</code></td>
-                <td>Structured Chunk Storage
+                <td align="center"><code><mark>4</mark></code></td>
+                <td><mark>Structured Chunk Storage</mark>
                   </td>
             </tr>
 
@@ -14682,9 +14711,9 @@ External Data Files Message</a></h4>
                 </tr>
 
                 <tr>
-                    <td align="left">Structured Chunk Storage</td>
-                    <td>See <a href="#StructChunkStorage">Structured Chunk Storage 
-                    Property Description</i></a> below.
+                    <td align="left"><mark>Structured Chunk Storage</mark></td>
+                    <td>See <a href="#StructChunkStorage"><mark>Structured Chunk Storage 
+                    Property Description</mark></i></a> below.
                       </td>
                 </tr>
 
@@ -14698,13 +14727,13 @@ External Data Files Message</a></h4>
         <br />
         <br />
         <a name="StructChunkStorage"></a>
-        <p>Class-specific information for structured chunk storage (layout 
-        class 4):</p>
+        <p><mark>Class-specific information for structured chunk storage (layout 
+        class 4):</mark></p>
 
         <div align="center">
           <table class="format">
         <caption>
-            Layout: Structured Chunk Storage Property Description
+            <mark>Layout: Structured Chunk Storage Property Description</mark>
         </caption>
 
         <tr>
@@ -14715,8 +14744,8 @@ External Data Files Message</a></h4>
         </tr>
 
         <tr>
-          <td>Version</td>
-          <td colspan="2">Structured Chunk Type</td>
+          <td><mark>Version</mark></td>
+          <td colspan="2"><mark>Structured Chunk Type</mark></td>
           <td colspan="1" bgcolor="#DDDDDD"><em>This space inserted to align table nicely</em></td>
         </tr>
 
@@ -14749,7 +14778,7 @@ External Data Files Message</a></h4>
         </tr>
 
         <tr>
-          <td colspan="4">Indexing Type Information <em>(variable size)</em></td>
+          <td colspan="4"><mark>Indexing Type Information <em>(variable size)</em></mark></td>
         </tr>
 
         <tr>
@@ -14757,7 +14786,7 @@ External Data Files Message</a></h4>
         </tr>
 
         <tr>
-          <td colspan="4"><br />Structured Chunk Composition <em>(variable size)</em><br /></br /></td>
+          <td colspan="4"><br /><mark>Structured Chunk Composition <em>(variable size)</mark></em><br /></br /></td>
         </tr>
 
           </table>
@@ -14768,7 +14797,7 @@ External Data Files Message</a></h4>
         <div align="center">
           <table class="desc">
         <caption>
-            Fields: Structured Chunk Storage Property Description
+            <mark>Fields: Structured Chunk Storage Property Description</mark>
         </caption>
         <tr>
               <th width="30%">Field Name</th>
@@ -14776,15 +14805,15 @@ External Data Files Message</a></h4>
         </tr>
 
         <tr>
-          <td><p>Version</p></td>
-          <td><p>This is the version number for the Structured Chunk Storage property.
-                 The value for this field is 0 and is introduced to support structured chunk.</p></td>
+          <td><p><mark>Version</mark></p></td>
+          <td><p><mark>This is the version number for the Structured Chunk Storage property.
+                 The value for this field is 0 and is introduced to support structured chunk.</mark></p></td>
         </tr>
 
         <tr>
-          <td><p>Structured Chunk Type</p></td>
+          <td><p><mark>Structured Chunk Type</mark></p></td>
           <td>
-                <p>Type of structured Chunk:
+                <p><mark>Type of structured Chunk:</mark>
                     <table class="list">
                         <tr>
                           <th width="20%" align="center">Bits</th>
@@ -14792,19 +14821,19 @@ External Data Files Message</a></h4>
                         </tr>
 
                         <tr>
-                          <td align="center"><code>0</code></td>
-                          <td>Sparse chunk storage type
+                          <td align="center"><mark><code>0</code></mark></td>
+                          <td><mark>Sparse chunk storage type</mark>
                           </td>
                         </tr>
                         <tr>
-                          <td align="center"><code>1</code></td>
-                          <td>Variable-length chunk storage type
+                          <td align="center"><code><mark>1</mark></code></td>
+                          <td><mark>Variable-length chunk storage type</mark>
                           </td>
                         </tr>
 
                         <tr>
-                          <td align="center"><code>2-15</code></td>
-                          <td>Reserved (zero).
+                          <td align="center"><mark><code>2-15</code></mark</td>
+                          <td><mark>Reserved (zero).</mark>
                           </td>
                         </tr>
                     </table></p>
@@ -14913,13 +14942,13 @@ External Data Files Message</a></h4>
         </tr>
 
         <tr>
-          <td><p>Indexing Type Information</p></td>
+          <td><p><mark>Indexing Type Information</mark></p></td>
           <td><p>This variable-sized field encodes information specific to 
           an indexing type for the structured chunk. More information on what is encoded with 
           each type can be found below.
             <ul>
-            <li>See <a href="#StructChunkIndexSingle"><i>Single Chunk</i></a> below.</li>
-            <li><i>Implicit</i> indexing type is not supported for structured chunk due to its variable-size nature.
+            <li><mark>See <a href="#StructChunkIndexSingle"><i>Single Chunk</i></a> below.</mark></li>
+            <li><mark><i>Implicit</i> indexing type is not supported for structured chunk due to its variable-size nature.</mark>
             <li>See <a href="#IndexInfoFixed"><i>Fixed Array</i></a> in version 4 of this message.</li>
             <li>See <a href="#IndexInfoExtensible"><i>Extensible Array</i></a> in version 4 of this message.</li>
             <li>See <a href="#IndexInfoV2Btrees"><i>Version 2 B-tree</i></a> in version 4 of this message.</li>
@@ -14974,8 +15003,8 @@ External Data Files Message</a></h4>
 
 
         <tr>
-          <td><p>Structured Chunk Composition</p></td>
-          <td><p>See <a href="#StructChunkComposition"><i>Structured Chunk Composition Description</i></a> below.</p></td>
+          <td><p><mark>Structured Chunk Composition</mark></p></td>
+          <td><p><mark>See <a href="#StructChunkComposition"><i>Structured Chunk Composition Description</i></a> below.</mark></p></td>
         </tr>
 
           </table>
@@ -14986,14 +15015,14 @@ External Data Files Message</a></h4>
         <br />
 
         <a name="StructChunkIndexSingle">
-        Structured Chunk Indexing Type Information for <i>Single Chunk</i>:
+        <mark>Structured Chunk Indexing Type Information for <i>Single Chunk</i></mark>:
         <br />
         <br />
         
         <div align="center">
           <table class="format">
         <caption>
-            Layout: Structured Chunk Indexing Type Information for Single Chunk
+            <mark>Layout: Structured Chunk Indexing Type Information for Single Chunk</mark>
         </caption>
 
         <tr>
@@ -15020,7 +15049,7 @@ External Data Files Message</a></h4>
         <div align="center">
           <table class="desc">
         <caption>
-            Fields: Structured Chunk Indexing Type Information for Single Chunk 
+            <mark>Fields: Structured Chunk Indexing Type Information for Single Chunk</mark>
         </caption>
         <tr>
               <th width="30%">Field Name</th>
@@ -15045,7 +15074,7 @@ External Data Files Message</a></h4>
         <div align="center">
           <table class="format">
         <caption>
-            Layout: Filtered Structured Chunk Indexing Type Information for Single Chunk
+            <mark>Layout: Filtered Structured Chunk Indexing Type Information for Single Chunk</mark>
         </caption>
 
         <tr>
@@ -15072,7 +15101,7 @@ External Data Files Message</a></h4>
         <div align="center">
           <table class="desc">
         <caption>
-            Fields: Filtered Structured Chunk Indexing Type Information for Single Chunk
+            <mark>Fields: Filtered Structured Chunk Indexing Type Information for Single Chunk</mark>
         </caption>
         <tr>
               <th width="30%">Field Name</th>
@@ -15096,13 +15125,13 @@ External Data Files Message</a></h4>
     <br />
     <br />
     <a name="StructChunkComposition"></a>
-    <p>Layout for the <em>Structured Chunk Composition Description</em>:</p>
+    <p><mark>Layout for the <em>Structured Chunk Composition Description</em>:</mark></p>
     <br />
 
         <div align="center">
           <table class="format">
         <caption>
-            Layout: Structured Chunk Composition Description
+            <mark>Layout: Structured Chunk Composition Description</mark>
         </caption>
 
         <tr>
@@ -15113,7 +15142,7 @@ External Data Files Message</a></h4>
         </tr>
 
         <tr>
-          <td colspan="4">Offset Size</td>
+          <td colspan="4"><br />Offset Size <em>(8 bytes)<em><br /><br /></td>
         </tr>
         <tr>
           <td>Number of Sections</td>
@@ -15123,7 +15152,7 @@ External Data Files Message</a></h4>
 
         <tr>
           <td>Number of First Section with metadata</td>
-          <td>...</td>
+          <td>Number of Second Section with metadata</td>
           <td>...</td>
           <td>Number of Last Section with metadata</td>
         </tr>
@@ -15137,7 +15166,7 @@ External Data Files Message</a></h4>
         <div align="center">
           <table class="desc">
         <caption>
-            Fields: Structured Chunk Composition Description
+            <mark>Fields: Structured Chunk Composition Description</mark>
         </caption>
         <tr>
               <th width="30%">Field Name</th>
@@ -15147,8 +15176,10 @@ External Data Files Message</a></h4>
         <tr>
           <td><p>Offset size</p></td>
           <td><p>Number of bytes used to store offsets in the structured chunk;
-                 currently it is 4 bytes due to API limitation;
-                 HDF5 file format allows chunk size bigger thatn 4GB</td>
+                 currently it is 8 bytes.  
+                 <p>Please notice that structured chunk 
+                 does not have 4GB limit on the chunk size as the “dense” chunk 
+                 has due to API limitations.</td>
         </tr>
 
         <tr>
@@ -15156,7 +15187,7 @@ External Data Files Message</a></h4>
           <td>
             <p>Number of sections in each structured chunk in the dataset.
                <p>At present, this number is implied by the structured chunk type above.
-               However, this needs not always be the case.</p>
+               However, this need not always be the case.</p>
           </td>
         </tr>
 
@@ -15167,7 +15198,7 @@ External Data Files Message</a></h4>
                requires a checksum if non-empty.</p>
             <p>At present, this number and the list of sections with metadata below is 
                implied by the <em>Structured Chunk Type</em> above.  
-               However, this needs not always be the case.</p>
+               However, this need not always be the case.</p>
           </td>
         </tr>
 
@@ -15175,6 +15206,14 @@ External Data Files Message</a></h4>
           <td><p>Number of first section with metadata</p></td>
           <td>
             <p>Number of the first section that may contain metadata.
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td><p>Number of second section with metadata</p></td>
+          <td>
+            <p>Number of the second section that may contain metadata.
             </p>
           </td>
         </tr>
@@ -15396,8 +15435,7 @@ External Data Files Message</a></h4>
     </div>
 <!--    </p> -->
     
-<h4><a name="FilterMessage">IV.A.2.l. The Data Storage - Filter 
-Pipeline Message</a></h4>
+<h4><a name="FilterMessage">IV.A.2.l. The Data Storage - Filter Pipeline Message</a></h4>
 
     <!-- start msgdesc table -->
     <center>
@@ -15418,8 +15456,9 @@ Pipeline Message</a></h4>
       filters to apply to the group&rsquo;s fractal heap. Currently, 
       only datasets using chunked data storage use the filter 
       pipeline on their raw data.</p>
-      To support structured chunk, a new version (verion 3) is added.
+      <mark>To support structured chunk, a new version (verion 3) is added.
       See <a href="#FilterMessageV3">version 3 of the Filter Pipeline message.</a> 
+      </mark>
       </td></tr>
     <tr><td colspan="2"><b>Format of Data:</b> See the tables 
       below.</td></tr>
@@ -15964,13 +16003,15 @@ Pipeline Message</a></h4>
     <br />
     <br />
     <a name="FilterMessageV3">
-    Version 3 of the Filter Pipeline Message:
+    <mark>The following is version 3 of the Filter Pipeline Message:</p>
+          Note: Except for <em>Filter Description List</em> which is the same as
+          version 2, all the fields are different from the previous version.</mark>
     <br />
     <br />
     <div align="center">
       <table class="format">
     <caption>
-        Layout: Filter Pipeline Message - Version 3
+        <mark>Layout: Filter Pipeline Message - Version 3</mark>
     </caption>
 
 	<tr>
@@ -16015,7 +16056,7 @@ Pipeline Message</a></h4>
     <div align="center">
       <table class="desc">
     <caption>
-        Fields: Filter Pipeline Message - Version 3
+        <mark>Fields: Filter Pipeline Message - Version 3</mark>
     </caption>
 	<tr>
           <th width="30%">Field Name</th>
@@ -16025,7 +16066,7 @@ Pipeline Message</a></h4>
 	<tr>
 	  <td><p>Version</p></td>
 	  <td><p>The version number for this message. The value for this field
-             is 3 and is introduced ot support structured chunk.</p></td>
+             is 3 and is introduced to support structured chunk.</p></td>
 	</tr>
 
 	<tr>
@@ -18599,9 +18640,12 @@ dataset&rsquo;s dimension specification and the way it is extended.
     <p>An entry describes either a filtered or non-filtered dataset 
     chunk.  The formats for both element types are described below.
 
-    <p>To support structured chunk, a new version (version 1) is added
+    <p>
+    <mark>
+    To support structured chunk, a new version (version 1) is added
     to the fixed array index structures as well as new client IDs and
     element types.  See <a href="#FixedArrayV1">Fixed Array version 1</a>.
+    </mark>
     </p>
     <br />
     <div align="center">
@@ -18968,6 +19012,7 @@ dataset&rsquo;s dimension specification and the way it is extended.
       </table>
     </div>
 
+    <br />
     <br />
     <div align="center">
       <table class="desc">
@@ -19153,16 +19198,15 @@ dataset&rsquo;s dimension specification and the way it is extended.
 
     <br />
     <br />
-    <br />
-Version 1 of the Fixed Array index:
-    <br />
     <a name="FixedArrayV1"></a>
+    <br />
+    <mark>Version 1 of the Fixed Array index:</mark>
     <br />
     <br />
     <div align="center">
       <table class="format">
         <caption>
-            Layout: Fixed Array Header
+            <mark>Layout: Fixed Array Header</mark>
         </caption>
 
         <tr>
@@ -19177,8 +19221,8 @@ Version 1 of the Fixed Array index:
         </tr>
           
         <tr>
-          <td>Version</td>
-          <td>Client ID</td>
+          <td><mark>Version</mark></td>
+          <td><mark>Client ID</mark></td>
           <td>Entry Size</td>
           <td>Page Bits</td>
         </tr>
@@ -19222,7 +19266,7 @@ Version 1 of the Fixed Array index:
     <div align="center">
       <table class="desc">
         <caption>
-            Fields: Fixed Array Header
+            <mark>Fields: Fixed Array Header</mark>
         </caption>
 	<tr>
           <th width="40%">Field Name</th>
@@ -19241,15 +19285,15 @@ Version 1 of the Fixed Array index:
         </tr>
           
         <tr>
-          <td><p>Version</p></td>
+          <td><p><mark>Version</mark></p></td>
           <td>
-            <p>The value for this field is 1
-               and is introduced to support structured chunk.</p>
+            <p><mark>The value for this field is 1
+               and is introduced to support structured chunk.</mark</p>
           </td>
         </tr>
 
 	<tr>
-          <td><p>Client ID</p></td>
+          <td><p><mark>Client ID</mark></p></td>
           <td>
             <p>The ID for identifying the client of the
                 Fixed Array:
@@ -19273,14 +19317,14 @@ Version 1 of the Fixed Array index:
                     </tr>
 
                     <tr>
-                      <td align="center"><code>2</code></td>
-                      <td>Structured dataset chunks
+                      <td align="center"><code><mark>2</mark></code></td>
+                      <td><mark>Structured dataset chunks</mark>
                       </td>
                     </tr>
 
                     <tr>
-                      <td align="center"><code>3</code></td>
-                      <td>Filtered structured dataset chunks
+                      <td align="center"><code><mark>3</mark></code></td>
+                      <td><mark>Filtered structured dataset chunks</mark>
                       </td>
                     </tr>
 
@@ -19342,7 +19386,7 @@ Version 1 of the Fixed Array index:
     <div align="center">
       <table class="format">
         <caption>
-            Layout: Fixed Array Data Block
+            <mark>Layout: Fixed Array Data Block</mark>
         </caption>
 
         <tr>
@@ -19357,8 +19401,8 @@ Version 1 of the Fixed Array index:
         </tr>
           
         <tr>
-          <td>Version</td>
-          <td>Client ID</td>
+          <td><mark>Version</mark</td>
+          <td><mark>Client ID</mark></td>
           <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted 
           only to align table nicely</em></td>
         </tr>
@@ -19373,8 +19417,8 @@ Version 1 of the Fixed Array index:
         </tr>
 
         <tr>
-          <td colspan="4"><br />Elements <em>(variable size and 
-          optional)</em><br /><br /></td>
+          <td colspan="4"><br /><mark>Elements <em>(variable size and 
+          optional)</em></mark><br /><br /></td>
         </tr>
 
         <tr>
@@ -19399,7 +19443,7 @@ Version 1 of the Fixed Array index:
     <div align="center">
       <table class="desc">
         <caption>
-            Fields: Fixed Array Data Block
+            <mark>Fields: Fixed Array Data Block</mark>
         </caption>
 	<tr>
           <th width="40%">Field Name</th>
@@ -19418,15 +19462,15 @@ Version 1 of the Fixed Array index:
         </tr>
           
         <tr>
-          <td><p>Version</p></td>
+          <td><p><mark>Version</mark></p></td>
           <td>
-            <p>The value for this field is 1
-               and is introduced to support structured chunk.</p>
+            <p><mark>The value for this field is 1
+               and is introduced to support structured chunk.</mark></p>
           </td>
         </tr>
 
 	<tr>
-          <td><p>Client ID</p></td>
+          <td><p><mark>Client ID</mark></p></td>
           <td>
             <p>The ID for identifying the client of the
                 Fixed Array:
@@ -19450,14 +19494,14 @@ Version 1 of the Fixed Array index:
                     </tr>
 
                     <tr>
-                      <td align="center"><code>2</code></td>
-                      <td>Structured dataset chunks
+                      <td align="center"><code><mark>2</mark></code></td>
+                      <td><mark>Structured dataset chunks</mark>
                       </td>
                     </tr>
 
                     <tr>
-                      <td align="center"><code>3</code></td>
-                      <td>Filtered structured dataset chunks
+                      <td align="center"><code><mark>3</mark></code></td>
+                      <td><mark>Filtered structured dataset chunks</mark>
                       </td>
                     </tr>
 
@@ -19487,7 +19531,7 @@ Version 1 of the Fixed Array index:
 	</tr>
 	
 	<tr>
-	  <td><p>Elements</p></td>
+	  <td><p><mark>Elements</mark></p></td>
 	  <td>
 	    <p>Contains the elements stored in the data block 
         and exists only if the data block is not paged.
@@ -19514,15 +19558,15 @@ Version 1 of the Fixed Array index:
 
                     <tr>
                       <td align="center"><code>2</code></td>
-                      <td><a href="#FaStructNonFilterChunk">Structured dataset 
-                      chunks</i></a>
+                      <td><mark><a href="#FaStructNonFilterChunk">Structured dataset 
+                      chunks</i></a></mark>
                       </td>
                     </tr>
 
                     <tr>
                       <td align="center"><code>3</code></td>
-                      <td><a href="#FaStructFilterChunk">Filtered structured
-                      dataset chunks</i></a>
+                      <td><mark><a href="#FaStructFilterChunk">Filtered structured
+                      dataset chunks</i></a></mark>
                       </td>
                     </tr>
 
@@ -19546,8 +19590,8 @@ Version 1 of the Fixed Array index:
     <br />
     <div align="center">
       <table class="format">
-        <caption><a name="FADataBlockPage">
-            Layout: Fixed Array Data Block Page</a>
+        <caption><mark><a name="FADataBlockPage">
+            Layout: Fixed Array Data Block Page</a></mark>
         </caption>
 
         <tr>
@@ -19558,8 +19602,8 @@ Version 1 of the Fixed Array index:
         </tr>
 
         <tr>
-          <td colspan="4"><br />Elements <em>(variable 
-          size)</em><br /><br /></td>
+          <td colspan="4"><br /><mark>Elements <em>(variable 
+          size)</em></mark><br /><br /></td>
         </tr>
 
         <tr>
@@ -19573,7 +19617,7 @@ Version 1 of the Fixed Array index:
     <div align="center">
       <table class="desc">
         <caption>
-            Fields: Fixed Array Data Block Page
+            <mark>Fields: Fixed Array Data Block Page</mark>
         </caption>
 	<tr>
           <th width="40%">Field Name</th>
@@ -19581,7 +19625,7 @@ Version 1 of the Fixed Array index:
         </tr>
 
 	<tr>
-	  <td><p>Elements</p></td>
+	  <td><p><mark>Elements</mark></p></td>
 	  <td>
 	    <p>Contains the elements stored in the data block page.
 	    There are four element types:
@@ -19603,15 +19647,15 @@ Version 1 of the Fixed Array index:
                     </tr>
 
                     <tr>
-                      <td align="center"><code>2</code></td>
-                      <td><a href="#FaStructNonFilterChunk">Structured dataset chunks</i></a>
-                      </td>
+                      <td align="center"><code><mark>2</mark></code></td>
+                      <td><mark><a href="#FaStructNonFilterChunk">Structured dataset chunks</i></a>
+                      </mark></td>
                     </tr>
 
                     <tr>
-                      <td align="center"><code>3</code></td>
-                      <td><a href="#FaStructFilterChunk">Filtered Structured dataset chunks</i></a>
-                      </td>
+                      <td align="center"><code><mark>3</mark></code></td>
+                      <td><mark><a href="#FaStructFilterChunk">Filtered Structured dataset chunks</i></a>
+                      </mark></td>
                     </tr>
 
                 </table>
@@ -19636,7 +19680,7 @@ Version 1 of the Fixed Array index:
     <div align="center">
       <table class="format">
     <caption>
-        Layout: Data Block Element for Structured Dataset Chunk
+        <mark>Layout: Data Block Element for Structured Dataset Chunk</mark>
     </caption>
 
 	<tr>
@@ -19651,11 +19695,11 @@ Version 1 of the Fixed Array index:
 	</tr>
 
 	<tr>
-	  <td colspan="4"><br />Chunk Size <em>(variable size; at most 8 bytes)</em><br /><br /></td>
+	  <td colspan="4"><br /><mark>Chunk Size <em>(variable size; at most 8 bytes)</em></mark><br /><br /></td>
 	</tr>
 
 	<tr>
-	  <td colspan="4"><br />Structured Chunk Metadata <em>(variable size, but fixed within any one index)</em><br /><br /></td>
+	  <td colspan="4"><br /><mark>Structured Chunk Metadata <em>(variable size, but fixed within any one index)</em></mark><br /><br /></td>
 	</tr>
 
       </table>
@@ -19675,7 +19719,7 @@ Version 1 of the Fixed Array index:
     <div align="center">
       <table class="desc">
     <caption>
-        Fields: Data Block Element for Structured Dataset Chunk
+        <mark>Fields: Data Block Element for Structured Dataset Chunk</mark>
     </caption>
 	<tr>
           <th width="30%">Field Name</th>
@@ -19690,14 +19734,14 @@ Version 1 of the Fixed Array index:
 	</tr>
 
 	<tr>
-	  <td><p>Chunk Size</p></td>
-	  <td><p>The size of the dataset chunk in bytes (at most 8 bytes).</p>
+	  <td><p><mark>Chunk Size</mark></p></td>
+	  <td><p><mark>The size of the dataset chunk in bytes (at most 8 bytes).</mark></p>
           </td>
 	</tr>
 
     <tr>
-        <td><p>Structured Chunk Metadata</p></td>
-        <td><p>See <a href="#StructChunkMeta"><i>Structured Chunk Metadata</i></a></p></td>
+        <td><p><mark>Structured Chunk Metadata</mark></p></td>
+        <td><p><mark>See <a href="#StructChunkMeta"><i>Structured Chunk Metadata</i></a></mark></p></td>
     </tr>
 
       </table>
@@ -19711,7 +19755,7 @@ Version 1 of the Fixed Array index:
     <div align="center">
       <table class="format">
     <caption>
-        Layout: Data Block Element for Filtered Structured Dataset Chunk
+        <mark>Layout: Data Block Element for Filtered Structured Dataset Chunk</mark>
     </caption>
 
 	<tr>
@@ -19730,7 +19774,7 @@ Version 1 of the Fixed Array index:
 	</tr>
 
 	<tr>
-	  <td colspan="4"><br />Filtered Structured Chunk Metadata<em>(variable size, but fixed within any one index)</em><br /><br /></td>
+	  <td colspan="4"><br /><mark>Filtered Structured Chunk Metadata <em>(variable size, but fixed within any one index)</em></mark><br /><br /></td>
 	</tr>
 
       </table>
@@ -19750,7 +19794,7 @@ Version 1 of the Fixed Array index:
     <div align="center">
       <table class="desc">
     <caption>
-        Fields: Data Block Element for Filtered Structured Dataset Chunk
+        <mark>Fields: Data Block Element for Filtered Structured Dataset Chunk</mark>
     </caption>
 	<tr>
           <th width="30%">Field Name</th>
@@ -19772,8 +19816,8 @@ Version 1 of the Fixed Array index:
 	</tr>
 
     <tr>
-        <td><p>Filtered Structured Chunk Metadata</p></td>
-        <td><p>See <a href="#FilterStructChunkMeta"><i>Filtered Structured Chunk Metadata</i></a></p></td>
+        <td><p><mark>Filtered Structured Chunk Metadata</mark></p></td>
+        <td><p><mark>See <a href="#FilterStructChunkMeta"><i>Filtered Structured Chunk Metadata</i></a></mark></p></td>
     </tr>
 
       </table>
@@ -19837,9 +19881,12 @@ Version 1 of the Fixed Array index:
     needed and the first few are (conceptually) stored in parent 
     elements as an optimization.</p>
 
-    <p>To support structured chunk, a new version (version 1) is added
+    <p>
+    <mark>
+    To support structured chunk, a new version (version 1) is added
     to the extensible array index structures as well as new client IDs and
     element types.  See <a href="#ExtensibleArrayV1">Extensible Array version 1</a>.
+    </mark>
     </p>
     <br />
     
@@ -20852,14 +20899,14 @@ Version 1 of the Fixed Array index:
 </br>
 </br>
 </br>
-Version 1 of the Extensible Array index:
+    <p><a name="ExtensibleArrayV1"></a> 
+    <mark>Version 1 of the Extensible Array index:</mark>
 <br />
 
-    <a name="ExtensibleArrayV1"></a>
     <div align="center">
       <table class="format">
         <caption>
-            Layout: Extensible Array Header
+            <mark>Layout: Extensible Array Header</mark>
         </caption>
 
         <tr>
@@ -20874,8 +20921,8 @@ Version 1 of the Extensible Array index:
         </tr>
           
         <tr>
-          <td>Version</td>
-          <td>Client ID</td>
+          <td><mark>Version</mark></td>
+          <td><mark>Client ID</mark></td>
           <td>Element Size</td>
           <td>Max Nelmts Bits</td>
 	</tr>
@@ -20939,7 +20986,7 @@ Version 1 of the Extensible Array index:
     <div align="center">
       <table class="desc">
         <caption>
-            Fields: Extensible Array Header
+            <mark>Fields: Extensible Array Header</mark>
         </caption>
 	<tr>
           <th width="40%">Field Name</th>
@@ -20958,15 +21005,15 @@ Version 1 of the Extensible Array index:
         </tr>
           
         <tr>
-          <td><p>Version</p></td>
+          <td><p><mark>Version</mark></p></td>
           <td>
-            <p>The value for this field is 1
-               and is introduced to support structured chunk.</p>
+            <p><mark>The value for this field is 1
+               and is introduced to support structured chunk.</mark></p>
           </td>
         </tr>
 
 	<tr>
-          <td><p>Client ID</p></td>
+          <td><p><mark>Client ID</mark></p></td>
           <td>
             <p>The ID for identifying the client of the
                 Extensible Array:
@@ -20989,14 +21036,14 @@ Version 1 of the Extensible Array index:
                     </tr>
 
                     <tr>
-                      <td align="center"><code>2</code></td>
-                      <td>Structured dataset chunks
+                      <td align="center"><code><mark>2</mark></code></td>
+                      <td><mark>Structured dataset chunks</mark>
                       </td>
                     </tr>
 
                     <tr>
-                      <td align="center"><code>3</code></td>
-                      <td>Filtered structured dataset chunks
+                      <td align="center"><code><mark>3</code></mark></td>
+                      <td><mark>Filtered structured dataset chunks</mark>
                       </td>
                     </tr>
 
@@ -21132,7 +21179,7 @@ Version 1 of the Extensible Array index:
     <div align="center">
       <table class="format">
         <caption>
-            Layout: Extensible Array Index Block
+            <mark>Layout: Extensible Array Index Block</mark>
         </caption>
 
         <tr>
@@ -21147,8 +21194,8 @@ Version 1 of the Extensible Array index:
         </tr>
           
         <tr>
-          <td>Version</td>
-          <td>Client ID</td>
+          <td><mark>Version</mark></td>
+          <td><mark>Client ID</mark></td>
           <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted 
           only to align table nicely</em></td>
         </tr>
@@ -21158,8 +21205,8 @@ Version 1 of the Extensible Array index:
         </tr>
 
         <tr>
-          <td colspan="4"><br />Elements <em>(variable size and 
-          optional)</em><br /><br /></td>
+          <td colspan="4"><br /><mark>Elements <em>(variable size and 
+          optional)</em></mark><br /><br /></td>
         </tr>
 
         <tr>
@@ -21194,7 +21241,7 @@ Version 1 of the Extensible Array index:
     <div align="center">
       <table class="desc">
         <caption>
-            Fields: Extensible Array Index Block
+            <mark>Fields: Extensible Array Index Block</mark>
         </caption>
 	<tr>
           <th width="40%">Field Name</th>
@@ -21213,15 +21260,15 @@ Version 1 of the Extensible Array index:
         </tr>
           
         <tr>
-          <td><p>Version</p></td>
+          <td><p><mark>Version</mark></p></td>
           <td>
-            <p>The value for this field is 1
-               and is introduced to support structured chunk.</p>
+            <p><mark>The value for this field is 1
+               and is introduced to support structured chunk.</mark></p>
           </td>
         </tr>
 
 	<tr>
-          <td><p>Client ID</p></td>
+          <td><p><mark>Client ID</mark</p></td>
           <td>
             <p>The client ID for identifying the user of the
                 Extensible Array:
@@ -21244,13 +21291,13 @@ Version 1 of the Extensible Array index:
                     </tr>
 
                     <tr>
-                      <td align="center"><code>2</code></td>
-                      <td>Structured dataset chunks
+                      <td align="center"><code><mark>2</mark></code></td>
+                      <td><mark>Structured dataset chunks</mark>
                       </td>
                     </tr>
                     <tr>
-                      <td align="center"><code>3</code></td>
-                      <td>Filtered structured dataset chunks
+                      <td align="center"><code><mark>3</mark></code></td>
+                      <td><mark>Filtered structured dataset chunks</mark>
                       </td>
                     </tr>
 
@@ -21273,7 +21320,7 @@ Version 1 of the Extensible Array index:
         </tr>
 
 	<tr>
-	  <td><p>Elements</p></td>
+	  <td><p><mark>Elements</mark></p></td>
 	  <td>
 	    <p>Contains the elements that are stored directly in 
         the index block. An optimization to avoid unnecessary 
@@ -21298,13 +21345,13 @@ Version 1 of the Extensible Array index:
                       </td>
                     </tr>
                     <tr>
-                      <td align="center"><code>2</code></td>
-                      <td><a href="#EaStructNonFilterChunk">Structured dataset chunks</i></a>
+                      <td align="center"><code><mark>2</mark></code></td>
+                      <td><a href="#EaStructNonFilterChunk"><mark>Structured dataset chunks</mark></i></a>
                       </td>
                     </tr>
                     <tr>
-                      <td align="center"><code>3</code></td>
-                      <td><a href="#EaStructFilterChunk">Filtered structured dataset chunks</i></a>
+                      <td align="center"><code><mark>3</mark></code></td>
+                      <td><a href="#EaStructFilterChunk"><mark>Filtered structured dataset chunks</mark></i></a>
                       </td>
                     </tr>
                 </table>
@@ -21345,7 +21392,7 @@ Version 1 of the Extensible Array index:
     <div align="center">
       <table class="format">
         <caption>
-            Layout: Extensible Array Secondary Block
+            <mark>Layout: Extensible Array Secondary Block</mark>
         </caption>
 
         <tr>
@@ -21360,8 +21407,8 @@ Version 1 of the Extensible Array index:
         </tr>
           
         <tr>
-          <td>Version</td>
-          <td>Client ID</td>
+          <td><mark>Version</mark></td>
+          <td><mark>Client ID</mark></td>
           <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted 
           only to align table nicely</em></td>
         </tr>
@@ -21407,7 +21454,7 @@ Version 1 of the Extensible Array index:
     <div align="center">
       <table class="desc">
         <caption>
-            Fields: Extensible Array Secondary Block
+            <mark>Fields: Extensible Array Secondary Block</mark>
         </caption>
 	<tr>
           <th width="40%">Field Name</th>
@@ -21426,15 +21473,15 @@ Version 1 of the Extensible Array index:
         </tr>
           
         <tr>
-          <td><p>Version</p></td>
+          <td><p><mark>Version</mark></p></td>
           <td>
-            <p>The value for this field is 1
-               and is introduced to support structured chunk.</p>
+            <p><mark>The value for this field is 1
+               and is introduced to support structured chunk.</mark></p>
           </td>
         </tr>
 
 	<tr>
-          <td><p>Client ID</p></td>
+          <td><p><mark>Client ID</mark></p></td>
           <td>
             <p>The ID for identifying the client of the
                 Extensible Array:
@@ -21456,13 +21503,13 @@ Version 1 of the Extensible Array index:
                       </td>
                     </tr>
                     <tr>
-                      <td align="center"><code>2</code></td>
-                      <td>Structured dataset chunks
+                      <td align="center"><code><mark>2</mark></code></td>
+                      <td><mark>Structured dataset chunks</mark>
                       </td>
                     </tr>
                     <tr>
-                      <td align="center"><code>3</code></td>
-                      <td>Filtered structured dataset chunks
+                      <td align="center"><code><mark>3</mark></code></td>
+                      <td><mark>Filtered structured dataset chunks</mark>
                       </td>
                     </tr>
 
@@ -21527,7 +21574,7 @@ Version 1 of the Extensible Array index:
     <div align="center">
       <table class="format">
         <caption>
-            Layout: Extensible Array Data Block
+            <mark>Layout: Extensible Array Data Block</mark>
         </caption>
 
         <tr>
@@ -21542,8 +21589,8 @@ Version 1 of the Extensible Array index:
         </tr>
           
         <tr>
-          <td>Version</td>
-          <td>Client ID</td>
+          <td><mark>Version</mark></td>
+          <td><mark>Client ID</mark></td>
           <td colspan="2" bgcolor="#DDDDDD"><em>This space inserted 
           only to align table nicely</em></td>
         </tr>
@@ -21558,8 +21605,8 @@ Version 1 of the Extensible Array index:
         </tr>
 
         <tr>
-          <td colspan="4"><br />Elements <em>(variable size and 
-          optional)</em><br /><br /></td>
+          <td colspan="4"><br /><mark>Elements <em>(variable size and 
+          optional)</em></mark><br /><br /></td>
         </tr>
 
         <tr>
@@ -21584,7 +21631,7 @@ Version 1 of the Extensible Array index:
     <div align="center">
       <table class="desc">
         <caption>
-            Fields: Extensible Array Data Block
+            <mark>Fields: Extensible Array Data Block</mark>
         </caption>
 	<tr>
           <th width="40%">Field Name</th>
@@ -21603,15 +21650,15 @@ Version 1 of the Extensible Array index:
         </tr>
           
         <tr>
-          <td><p>Version</p></td>
+          <td><p><mark>Version</mark></p></td>
           <td>
-            <p>The value for this field is 1
-               and is introduced to support structured chunk.</p>
+            <p><mark>The value for this field is 1
+               and is introduced to support structured chunk.</mark></p>
           </td>
         </tr>
 
 	<tr>
-          <td><p>Client ID</p></td>
+          <td><p><mark>Client ID</mark></p></td>
           <td>
             <p>The ID for identifying the client of the
                 Extensible Array:
@@ -21634,13 +21681,13 @@ Version 1 of the Extensible Array index:
                     </tr>
 
                     <tr>
-                      <td align="center"><code>2</code></td>
-                      <td>Structured dataset chunks
+                      <td align="center"><code><mark>2</mark></code></td>
+                      <td><mark>Structured dataset chunks</mark>
                       </td>
                     </tr>
                     <tr>
-                      <td align="center"><code>3</code></td>
-                      <td>Filtered structured dataset chunks
+                      <td align="center"><code><mark>3</mark></code></td>
+                      <td><mark>Filtered structured dataset chunks</mark>
                       </td>
                     </tr>
 
@@ -21671,7 +21718,7 @@ Version 1 of the Extensible Array index:
 	</tr>
 	
 	<tr>
-	  <td><p>Elements</p></td>
+	  <td><p><mark>Elements</mark></p></td>
 	  <td>
 	    <p>Contains the elements stored in the data block and
 		exists only if the data block is not paged.
@@ -21695,13 +21742,13 @@ Version 1 of the Extensible Array index:
                       </td>
 
                     <tr>
-                      <td align="center"><code>2</code></td>
-                      <td><a href="#EaStructNonFilterChunk">Structured dataset chunks</i></a>
+                      <td align="center"><code><mark>2</mark></code></td>
+                      <td><a href="#EaStructNonFilterChunk"><mark>Structured dataset chunks</mark></i></a>
                       </td>
                     </tr>
                     <tr>
-                      <td align="center"><code>3</code></td>
-                      <td><a href="#EaStructFilterChunk">Filtered structured dataset chunks</i></a>
+                      <td align="center"><code><mark>3</mark></code></td>
+                      <td><a href="#EaStructFilterChunk"><mark>Filtered structured dataset chunks</mark></i></a>
                       </td>
 
                     </tr>
@@ -21726,7 +21773,7 @@ Version 1 of the Extensible Array index:
     <div align="center">
       <table class="format">
         <caption>
-            Layout: Extensible Array Data Block Page
+            <mark>Layout: Extensible Array Data Block Page</mark>
         </caption>
 
         <tr>
@@ -21737,8 +21784,8 @@ Version 1 of the Extensible Array index:
         </tr>
 
         <tr>
-          <td colspan="4"><br />Elements <em>(variable 
-          size)</em><br /><br /></td>
+          <td colspan="4"><br /><mark>Elements <em>(variable 
+          size)</em></mark><br /><br /></td>
         </tr>
 
         <tr>
@@ -21749,10 +21796,11 @@ Version 1 of the Extensible Array index:
     </div>
 
     <br />
+    <br />
     <div align="center">
       <table class="desc">
         <caption>
-            Fields: Extensible Array Data Block Page
+            <mark>Fields: Extensible Array Data Block Page</mark>
         </caption>
 	<tr>
           <th width="40%">Field Name</th>
@@ -21760,7 +21808,7 @@ Version 1 of the Extensible Array index:
         </tr>
 
 	<tr>
-	  <td><p>Elements</p></td>
+	  <td><p><mark>Elements</mark></p></td>
 	  <td>
 	    <p>Contains the elements stored in the data block 
         page.</p>
@@ -21784,13 +21832,13 @@ Version 1 of the Extensible Array index:
                     </tr>
 
                     <tr>
-                      <td align="center"><code>2</code></td>
-                      <td><a href="#EaStructNonFilterChunk">Structured dataset chunks</i></a>
+                      <td align="center"><code><mark>2</mark></code></td>
+                      <td><a href="#EaStructNonFilterChunk"><mark>Structured dataset chunks</mark></i></a>
                       </td>
                     </tr>
                     <tr>
-                      <td align="center"><code>3</code></td>
-                      <td><a href="#EaStructFilterChunk">Filtered structured dataset chunks</i></a>
+                      <td align="center"><code><mark>3</mark></code></td>
+                      <td><a href="#EaStructFilterChunk"><mark>Filtered structured dataset chunks</mark></i></a>
                       </td>
                     </tr>
                 </table>
@@ -21816,7 +21864,7 @@ Version 1 of the Extensible Array index:
     <div align="center">
       <table class="format">
     <caption>
-        Layout: Data Block Element for Structured Dataset Chunk
+        <mark>Layout: Data Block Element for Structured Dataset Chunk</mark>
     </caption>
 
 	<tr>
@@ -21831,11 +21879,11 @@ Version 1 of the Extensible Array index:
 	</tr>
 
 	<tr>
-	  <td colspan="4"><br />Chunk size <em>(variable size; at most 8 bytes)</em> <br /><br /></td>
+	  <td colspan="4"><br /><mark>Chunk size <em>(variable size; at most 8 bytes)</em></mark <br /><br /></td>
 	</tr>
 
 	<tr>
-	  <td colspan="4"><br />Structured Chunk Metadata <em>(variable size, but fixed within any one index)</em><br /><br /></td>
+	  <td colspan="4"><br /><mark>Structured Chunk Metadata <em>(variable size, but fixed within any one index)</em></mark><br /><br /></td>
 	</tr>
 
       </table>
@@ -21856,7 +21904,7 @@ Version 1 of the Extensible Array index:
     <div align="center">
       <table class="desc">
     <caption>
-        Fields: Data Block Element for Structured Dataset Chunk
+        <mark>Fields: Data Block Element for Structured Dataset Chunk</mark>
     </caption>
 	<tr>
           <th width="30%">Field Name</th>
@@ -21871,14 +21919,14 @@ Version 1 of the Extensible Array index:
 	</tr>
 
 	<tr>
-	  <td><p>Chunk Size</p></td>
-	  <td><p>The size of the dataset chunk in bytes (at most 8 bytes).</p>
+	  <td><p><mark>Chunk Size</mark></p></td>
+	  <td><p><mark>The size of the dataset chunk in bytes (at most 8 bytes).</mark></p>
           </td>
 	</tr>
 
     <tr>
-        <td><p>Structured Chunk Metadata</p></td>
-        <td><p>See <a href="#StructChunkMeta"><i>Structured Chunk Metadata</i></a></p></td>
+        <td><p><mark>Structured Chunk Metadata</mark></p></td>
+        <td><p><mark>See <a href="#StructChunkMeta"><i>Structured Chunk Metadata</i></a></mark></p></td>
     </tr>
 
       </table>
@@ -21892,7 +21940,7 @@ Version 1 of the Extensible Array index:
     <div align="center">
       <table class="format">
     <caption>
-        Layout: Data Block Element for Filtered Structured Dataset Chunk
+        <mark>Layout: Data Block Element for Filtered Structured Dataset Chunk</mark>
     </caption>
 
 	<tr>
@@ -21912,7 +21960,7 @@ Version 1 of the Extensible Array index:
 	</tr>
 
 	<tr>
-	  <td colspan="4"><br />Filtered Structured Chunk Metadata <em>(variable size, but fixed within any one index)</em><br /><br /></td>
+	  <td colspan="4"><br /><mark>Filtered Structured Chunk Metadata <em>(variable size, but fixed within any one index)</em></mark><br /><br /></td>
 	</tr>
 
       </table>
@@ -21932,7 +21980,7 @@ Version 1 of the Extensible Array index:
     <div align="center">
       <table class="desc">
     <caption>
-        Fields: Data Block Element for Filtered Structured Dataset Chunk
+        <mark>Fields: Data Block Element for Filtered Structured Dataset Chunk</mark>
     </caption>
 	<tr>
           <th width="30%">Field Name</th>
@@ -21954,8 +22002,8 @@ Version 1 of the Extensible Array index:
 	</tr>
 
     <tr>
-        <td><p>Filtered Structured Chunk Metadata</p></td>
-        <td><p>See <a href="#FilterStructChunkMeta"><i>Filtered Structured Chunk Metadata</i></a></p></td>
+        <td><p><mark>Filtered Structured Chunk Metadata</mark></p></td>
+        <td><p><mark>See <a href="#FilterStructChunkMeta"><i>Filtered Structured Chunk Metadata</mark></i></a></p></td>
     </tr>
 
       </table>
@@ -23597,8 +23645,9 @@ Encoding for dataspace and reference</a></h2>
       </table>
     </div>
 
-    <h2><a name="AppendixE"> VIII. Appendix E: 
-    Layout of Structured Chunk</a></h2>
+
+    <h2><mark><a name="AppendixE">IX. Appendix E: 
+    Layout of Structured Chunk</a></mark></h2>
 
 <p>A structured chunk consists of two parts:</p>
 <ol>
@@ -23633,20 +23682,21 @@ for it and may be filtered.
         </tr>
 
         <tr>
-          <td colspan="4">Offset of Section 1</td>
+          <td colspan="4"><br />Offset of Section 1 <em>(8 bytes)</em><br /><br /></td>
         </tr>
         <tr>
-          <td colspan="4">...</td>
+          <td colspan="4"><br />...<br /><br .></td>
         </tr>
 
         <tr>
-          <td colspan="4">Offset of Section (N-1)</td>
+          <td colspan="4"><br />Offset of Section (N-1) <em>(8 bytes)</em><br /><br /></td>
         </tr>
 
           </table>
 
         </div>
 
+        <br />
         <br />
         <div align="center">
           <table class="desc">
@@ -23672,6 +23722,7 @@ for it and may be filtered.
         </p>
 
         <br />
+        <br />
 
         <a name="FilterStructChunkMeta">
         <div align="center">
@@ -23688,39 +23739,40 @@ for it and may be filtered.
         </tr>
 
         <tr>
-          <td colspan="4">Offset of Section 1</td>
+          <td colspan="4"><br />Offset of Section 1 <em>(8 bytes)</em><br /><br /></td>
         </tr>
         <tr>
-          <td colspan="4">...</td>
+          <td colspan="4"><br />...<br /><br /></td>
         </tr>
         <tr>
-          <td colspan="4">Offset of Section (N-1)</td>
-        </tr>
-
-        <tr>
-          <td colspan="4">Unfiltered Size of Section 0</td>
-        </tr>
-        <tr>
-          <td colspan="4">...</td>
-        </tr>
-        <tr>
-          <td colspan="4"><br />Unfiltered Size of Section (N-1)<br /></td>
+          <td colspan="4"><br />Offset of Section (N-1) <em>(8 bytes)</em><br /><br /></td>
         </tr>
 
         <tr>
-          <td colspan="4">Filter Mask of Section 0</td>
+          <td colspan="4"><br />Unfiltered Size of Section 0 <em>(8 bytes)</em><br /><br /></td>
         </tr>
         <tr>
           <td colspan="4">...</td>
         </tr>
         <tr>
-          <td colspan="4"><br />Filter Mask of Section (N-1)<br /></td>
+          <td colspan="4"><br />Unfiltered Size of Section (N-1) <em>(8 bytes)</em><br /><br /></td>
+        </tr>
+
+        <tr>
+          <td colspan="4">Filter Mask of Section 0 <em>(4 bytes)</em></td>
+        </tr>
+        <tr>
+          <td colspan="4">...</td>
+        </tr>
+        <tr>
+          <td colspan="4">Filter Mask of Section (N-1) <em>(4 bytes)</em><br /></td>
         </tr>
 
           </table>
 
         </div>
 
+        <br />
         <br />
         <div align="center">
           <table class="desc">
@@ -23761,6 +23813,7 @@ for it and may be filtered.
         </p>
 
         <br />
+        <br />
 
         <div align="center">
           <table class="format">
@@ -23776,25 +23829,26 @@ for it and may be filtered.
         </tr>
 
         <tr>
-          <td colspan="4"><br />Section 0 <em>(variable size - may be empty)</em><br /></td>
+          <td colspan="4"><br />Section 0 <em>(variable size; may be empty)</em><br /></td>
         </tr>
         <tr>
-          <td colspan="4"><br />Section 0 Checksum (<em>not not exist</em>)<br /></td>
+          <td colspan="4"><br />Section 0 Checksum (<em>4 bytes; not not exist</em>)<br /></td>
         <tr>
           <td colspan="4"><br />... <br /></td>
         </tr>
 
         <tr>
-          <td colspan="4"><br />Section (N-1) <em>(variable size - may be empty)</em><br /></td>
+          <td colspan="4"><br />Section (N-1) <em>(variable size; may be empty)</em><br /></td>
         </tr>
         <tr>
-          <td colspan="4"><br />Section (N-1) Checksum <em>(may not exist)</em><br /></td>
+          <td colspan="4"><br />Section (N-1) Checksum <em>(4 bytes; may not exist)</em><br /></td>
         </tr>
 
           </table>
 
         </div>
 
+        <br />
         <br />
         <div align="center">
           <table class="desc">
@@ -23864,7 +23918,7 @@ Three examples of structured chunk data layout are described below:
           <td colspan="4"><br />Encoded Selection of Defined Elements <em>(Section 0)</em><br /></td>
         </tr>
         <tr>
-          <td colspan="4"><br />Section 0 Checksum<br /></td>
+          <td colspan="4"><br />Section 0 Checksum <em>(4 bytes)</em><br /></td>
         </tr>
 
         <tr>
@@ -23924,7 +23978,7 @@ Three examples of structured chunk data layout are described below:
         </tr>
 
         <tr>
-          <td colspan="4"><br />Section 0 Checksum<br /></td>
+          <td colspan="4"><br />Section 0 Checksum <em>(4 bytes)</em><br /></td>
         </tr>
 
         <tr>
@@ -23932,7 +23986,7 @@ Three examples of structured chunk data layout are described below:
         </tr>
 
         <tr>
-          <td colspan="4"><br />Section 1 Checksum<br /></td>
+          <td colspan="4"><br />Section 1 Checksum <em>(4 bytes)</em><br /></td>
         </tr>
 
         <tr>
@@ -23940,7 +23994,7 @@ Three examples of structured chunk data layout are described below:
         </tr>
 
         <tr>
-          <td colspan="4"><br />Checksum for Variable-size Data Heap <em>(Section 2 Checksum)</em><br /></td>
+          <td colspan="4"><br />Checksum for Variable-size Data Heap <em>(4 bytes; Section 2 Checksum)</em><br /></td>
         </tr>
 
           </table>
@@ -23980,7 +24034,7 @@ Three examples of structured chunk data layout are described below:
         </tr>
 
         <tr>
-          <td colspan="4"><br />Section 0 Checksum<br /></td>
+          <td colspan="4"><br />Section 0 Checksum <em>(4 bytes)</em><br /></td>
         </tr>
 
         <tr>
@@ -23988,7 +24042,7 @@ Three examples of structured chunk data layout are described below:
         </tr>
 
         <tr>
-          <td colspan="4"><br />Checksum for Variable-size Data Heap <em>(Section 1 Checksum)</em><br /></td>
+          <td colspan="4"><br />Checksum for Variable-size Data Heap <em>(4 bytes; Section 1 Checksum)</em><br /></td>
         </tr>
 
           </table>
